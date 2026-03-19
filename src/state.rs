@@ -53,12 +53,9 @@ impl CargoTools {
         private_path.push("cargo-mcp.json");
         let session_store = SessionStore::new(Some(private_path))?;
 
-        // Shared context store for cross-server communication (working directory)
-        let mut shared_path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-        shared_path.push(".ai-tools");
-        shared_path.push("sessions");
-        shared_path.push("shared-context.json");
-        let shared_context_store = SessionStore::new(Some(shared_path))?;
+        // In-memory only: working directory is per-process state and must not
+        // bleed between separate MCP server instances (e.g., different worktrees).
+        let shared_context_store = SessionStore::new(None)?;
 
         let mut tools = Self {
             session_store,
