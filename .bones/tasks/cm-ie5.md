@@ -11,6 +11,7 @@ parent: cm-paw
 
 
 
+
 ## Context
 Phase 1 sub-epic cm-paw, parent epic cm-1k8. First task — smallest isolated change.
 File: `src/tools/cargo_clippy.rs`. Current clippy invocation builds args as `["clippy", "--package", pkg, "--", "-D", "warnings"]`. The `--all-targets` flag needs to go before the `--` separator.
@@ -46,3 +47,7 @@ R1: Add `all_targets: Option<bool>` field to `CargoClippy` struct. When true, in
 ### Adversarial Planning Notes
 - Most failure categories (input hostility, encoding, temporal, state, resource) don't apply — this is one boolean field with one conditional string push, no persistent state, no concurrency, no dynamic content.
 - **`--all-targets` + `--fix` interaction:** When both flags are set, clippy fixes apply to test/example/bench code too. This is valid cargo behavior and both params are opt-in — no mitigation needed, but worth noting in case of future user questions.
+
+## Log
+
+- [2026-03-21T19:35:45Z] [Seth] Debrief: Extracted build_args() method from execute() for testability — pattern not in original skeleton but emerged from need to test args without running cargo. MCP working dir defaulted to wrong project (forge_worktrees/optimize), caught before tests ran. tools! macro re-exports structs from private modules. Reflections: Skeleton arg-test approach would have been tautological (testing passthrough create_cargo_command). build_args() extraction is reusable for all Phase 1 tools. No user corrections.
