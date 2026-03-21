@@ -1,10 +1,11 @@
 ---
 id: cm-e3a
 title: Add extra_args to bench and run tools (conditional -- separators)
-status: open
+status: active
 type: task
 parent: cm-c1g
 ---
+
 
 ## Context
 Phase 2 of cm-1k8, final implementation task. cm-tb9 (closed) established the extra_args splice-before-separator pattern on clippy/test. cm-w82 (closed) added extra_args to the 6 simple tools (no separator). This task adds extra_args to the last 2 tools — both have conditional `--` separators that require splice-before logic.
@@ -88,15 +89,15 @@ Run tests — all should pass.
 Run all tests (should be ~64: 57 existing + 7 new). `cargo_check`, `cargo_clippy { all_targets: true }`.
 
 ## Success Criteria
-- [ ] CargoBench has build_args() and extra_args field
-- [ ] CargoRun has build_args() and extra_args field
-- [ ] CargoBench splices extra_args before conditional `--` separator
-- [ ] CargoRun splices extra_args before conditional `--` separator
-- [ ] Both tools pass extra_args through when no `--` separator present
-- [ ] No validation of extra_args contents
-- [ ] All existing tests pass
-- [ ] New tests verify both with-separator and without-separator cases
-- [ ] Baseline tests verify build_args() with extra_args: None matches current execute() behavior
+- [x] CargoBench has build_args() and extra_args field
+- [x] CargoRun has build_args() and extra_args field
+- [x] CargoBench splices extra_args before conditional `--` separator
+- [x] CargoRun splices extra_args before conditional `--` separator
+- [x] Both tools pass extra_args through when no `--` separator present
+- [x] No validation of extra_args contents
+- [x] All existing tests pass
+- [x] New tests verify both with-separator and without-separator cases
+- [x] Baseline tests verify build_args() with extra_args: None matches current execute() behavior
 
 ## Anti-Patterns
 - NO validation or filtering of extra_args (from parent epic)

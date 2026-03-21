@@ -59,6 +59,11 @@ pub struct CargoRun {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(skip)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl WithExamples for CargoRun {
@@ -110,56 +115,73 @@ impl WithExamples for CargoRun {
     }
 }
 
-impl Tool<CargoTools> for CargoRun {
-    fn execute(self, state: &mut CargoTools) -> Result<String> {
-        let project_path = state.ensure_rust_project(None)?;
-
-        // Use toolchain from args, session default, or none
-        let toolchain = self
-            .toolchain
-            .or_else(|| state.get_default_toolchain(None).unwrap_or(None));
-
-        let mut args = vec!["run"];
+impl CargoRun {
+    /// Build the cargo run argument list.
+    pub fn build_args(&self) -> Vec<String> {
+        let mut args = vec!["run".to_string()];
 
         if let Some(ref package) = self.package {
-            args.extend_from_slice(&["--package", package]);
+            args.push("--package".to_string());
+            args.push(package.clone());
         }
 
         if let Some(ref bin) = self.bin {
-            args.extend_from_slice(&["--bin", bin]);
+            args.push("--bin".to_string());
+            args.push(bin.clone());
         }
 
         if let Some(ref example) = self.example {
-            args.extend_from_slice(&["--example", example]);
+            args.push("--example".to_string());
+            args.push(example.clone());
         }
 
         if self.release.unwrap_or(false) {
-            args.push("--release");
+            args.push("--release".to_string());
         }
 
         if let Some(ref features) = self.features {
-            args.extend_from_slice(&["--features", features]);
+            args.push("--features".to_string());
+            args.push(features.clone());
         }
 
         if self.all_features.unwrap_or(false) {
-            args.push("--all-features");
+            args.push("--all-features".to_string());
         }
 
         if self.no_default_features.unwrap_or(false) {
-            args.push("--no-default-features");
+            args.push("--no-default-features".to_string());
+        }
+
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
         }
 
         // Add separator and binary arguments if provided
         if let Some(ref binary_args) = self.args
             && !binary_args.is_empty()
         {
-            args.push("--");
+            args.push("--".to_string());
             for arg in binary_args {
-                args.push(arg);
+                args.push(arg.clone());
             }
         }
 
-        let cmd = create_cargo_command(&args, toolchain.as_deref(), self.cargo_env.as_ref());
+        args
+    }
+}
+
+impl Tool<CargoTools> for CargoRun {
+    fn execute(self, state: &mut CargoTools) -> Result<String> {
+        let project_path = state.ensure_rust_project(None)?;
+        let args = self.build_args();
+
+        // Use toolchain from args, session default, or none
+        let toolchain = self
+            .toolchain
+            .or_else(|| state.get_default_toolchain(None).unwrap_or(None));
+
+        let args_refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+        let cmd = create_cargo_command(&args_refs, toolchain.as_deref(), self.cargo_env.as_ref());
         execute_cargo_command(cmd, &project_path, "cargo run")
     }
 }

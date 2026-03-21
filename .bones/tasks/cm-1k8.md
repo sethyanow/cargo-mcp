@@ -31,7 +31,7 @@ R5. All tool structs MUST support an `extra_args` parameter (`Vec<String>`) that
 - [x] MCP tool `cargo_fmt_check` no longer exists; `cargo_fmt` exists with `check` param
 - [x] `cargo_fmt` with default params passes `--check`; with `check: false` omits it
 - [x] `cargo_doc` tool exists and produces correct `cargo doc` commands
-- [ ] All tools accept `extra_args` and splice them before any `--` separator
+- [x] All tools accept `extra_args` and splice them before any `--` separator
 - [x] All existing tests pass
 - [x] New behavior covered by tests
 

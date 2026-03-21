@@ -25,8 +25,8 @@ After Phase 1, all tools are in final form. This phase adds `extra_args` to ever
 R5 (from parent): All tool structs MUST support `extra_args: Option<Vec<String>>` that passes arbitrary cargo-level arguments before any `--` separator.
 
 ## Success Criteria
-- [ ] Every tool struct has `extra_args: Option<Vec<String>>` field
-- [ ] Extra args are spliced into command before any `--` separator
+- [x] Every tool struct has `extra_args: Option<Vec<String>>` field
+- [x] Extra args are spliced into command before any `--` separator
 - [x] Tests verify extra_args appear in generated commands for at least clippy, test, fmt, and doc
 - [x] No validation of extra_args contents (cargo handles errors)
 - [x] All existing tests pass

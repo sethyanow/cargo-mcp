@@ -1207,3 +1207,310 @@ fn test_extra_args_with_empty_string() {
         "empty string extra_arg should be passed through verbatim"
     );
 }
+
+// ── CargoBench extra_args tests ─────────────────────────────────────
+
+#[test]
+fn bench_default_produces_minimal_args() {
+    use crate::tools::CargoBench;
+
+    let bench = CargoBench {
+        package: None,
+        bench_name: None,
+        baseline: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = bench.build_args();
+    assert_eq!(args, vec!["bench"], "default bench should produce just [\"bench\"]");
+}
+
+#[test]
+fn bench_extra_args_before_separator() {
+    use crate::tools::CargoBench;
+
+    let bench = CargoBench {
+        package: None,
+        bench_name: None,
+        baseline: Some("main".into()),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--features".into(), "foo".into()]),
+    };
+    let args = bench.build_args();
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("-- separator should be present when baseline is set");
+    for extra in &["--features", "foo"] {
+        let pos = args
+            .iter()
+            .position(|a| a == extra)
+            .unwrap_or_else(|| panic!("{extra} should be present"));
+        assert!(
+            pos < separator_pos,
+            "{extra} at {pos} must be before -- at {separator_pos}"
+        );
+    }
+    // Verify baseline args are after separator
+    assert_eq!(
+        &args[separator_pos..],
+        &["--", "--save-baseline", "main"],
+        "baseline args should follow -- separator"
+    );
+}
+
+#[test]
+fn bench_extra_args_no_separator() {
+    use crate::tools::CargoBench;
+
+    let bench = CargoBench {
+        package: Some("my-lib".into()),
+        bench_name: Some("perf_test".into()),
+        baseline: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--features".into(), "foo".into()]),
+    };
+    let args = bench.build_args();
+    assert_eq!(
+        args,
+        vec!["bench", "--package", "my-lib", "perf_test", "--features", "foo"],
+        "extra_args should be appended when no -- separator present"
+    );
+    assert!(
+        !args.contains(&"--".to_string()),
+        "no -- separator should be present when baseline is None"
+    );
+}
+
+// ── CargoRun extra_args tests ───────────────────────────────────────
+
+#[test]
+fn run_default_produces_minimal_args() {
+    use crate::tools::CargoRun;
+
+    let run = CargoRun {
+        extra_args: None,
+        ..CargoRun::default()
+    };
+    let args = run.build_args();
+    assert_eq!(args, vec!["run"], "default run should produce just [\"run\"]");
+}
+
+#[test]
+fn run_extra_args_before_separator() {
+    use crate::tools::CargoRun;
+
+    let run = CargoRun {
+        args: Some(vec!["--verbose".into()]),
+        extra_args: Some(vec!["--release".into()]),
+        ..CargoRun::default()
+    };
+    let args = run.build_args();
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("-- separator should be present when binary args exist");
+    let release_pos = args
+        .iter()
+        .position(|a| a == "--release")
+        .expect("--release should be present");
+    assert!(
+        release_pos < separator_pos,
+        "--release at {release_pos} must be before -- at {separator_pos}"
+    );
+    assert_eq!(
+        &args[separator_pos..],
+        &["--", "--verbose"],
+        "binary args should follow -- separator"
+    );
+}
+
+#[test]
+fn run_extra_args_no_separator() {
+    use crate::tools::CargoRun;
+
+    let run = CargoRun {
+        args: None,
+        extra_args: Some(vec!["--release".into()]),
+        ..CargoRun::default()
+    };
+    let args = run.build_args();
+    assert_eq!(
+        args,
+        vec!["run", "--release"],
+        "extra_args should be appended when no binary args present"
+    );
+    assert!(
+        !args.contains(&"--".to_string()),
+        "no -- separator should be present when args is None"
+    );
+}
+
+#[test]
+fn run_all_fields_set_ordering() {
+    use crate::tools::CargoRun;
+
+    let run = CargoRun {
+        package: Some("my-crate".into()),
+        bin: Some("worker".into()),
+        example: None,
+        release: Some(true),
+        features: Some("feat1".into()),
+        all_features: None,
+        no_default_features: Some(true),
+        args: Some(vec!["--config".into(), "prod.toml".into()]),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--jobs".into(), "4".into()]),
+    };
+    let args = run.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "run",
+            "--package", "my-crate",
+            "--bin", "worker",
+            "--release",
+            "--features", "feat1",
+            "--no-default-features",
+            "--jobs", "4",
+            "--",
+            "--config", "prod.toml",
+        ],
+        "all fields should produce correct ordering with extra_args before --"
+    );
+}
+
+// ── adversarial bench/run extra_args tests ──────────────────────────
+
+#[test]
+fn bench_extra_args_empty_vec_unchanged() {
+    use crate::tools::CargoBench;
+
+    // Empty vec should behave identically to None
+    let with_empty = CargoBench {
+        package: None,
+        bench_name: Some("perf".into()),
+        baseline: Some("main".into()),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec![]),
+    };
+    let with_none = CargoBench {
+        package: None,
+        bench_name: Some("perf".into()),
+        baseline: Some("main".into()),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    assert_eq!(
+        with_empty.build_args(),
+        with_none.build_args(),
+        "Some(vec![]) should produce identical args to None"
+    );
+}
+
+#[test]
+fn bench_extra_args_containing_separator() {
+    use crate::tools::CargoBench;
+
+    // Semantically hostile: user passes "--" as extra_arg when baseline also adds "--"
+    let bench = CargoBench {
+        package: None,
+        bench_name: None,
+        baseline: Some("main".into()),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--".into(), "--exact".into()]),
+    };
+    let args = bench.build_args();
+    // Per anti-pattern: no validation. Both "--" should be present.
+    assert_eq!(
+        args,
+        vec!["bench", "--", "--exact", "--", "--save-baseline", "main"],
+        "extra_args '--' should pass through verbatim before baseline's '--'"
+    );
+}
+
+#[test]
+fn run_extra_args_empty_vec_unchanged() {
+    use crate::tools::CargoRun;
+
+    // Empty vec should behave identically to None
+    let with_empty = CargoRun {
+        args: Some(vec!["--verbose".into()]),
+        extra_args: Some(vec![]),
+        ..CargoRun::default()
+    };
+    let with_none = CargoRun {
+        args: Some(vec!["--verbose".into()]),
+        extra_args: None,
+        ..CargoRun::default()
+    };
+    assert_eq!(
+        with_empty.build_args(),
+        with_none.build_args(),
+        "Some(vec![]) should produce identical args to None"
+    );
+}
+
+#[test]
+fn run_extra_args_containing_separator() {
+    use crate::tools::CargoRun;
+
+    // Semantically hostile: user passes "--" as extra_arg when binary args also add "--"
+    let run = CargoRun {
+        args: Some(vec!["--config".into(), "dev.toml".into()]),
+        extra_args: Some(vec!["--".into(), "--jobs".into(), "2".into()]),
+        ..CargoRun::default()
+    };
+    let args = run.build_args();
+    // Per anti-pattern: no validation. Both "--" should be present.
+    assert_eq!(
+        args,
+        vec!["run", "--", "--jobs", "2", "--", "--config", "dev.toml"],
+        "extra_args '--' should pass through verbatim before binary args' '--'"
+    );
+}
+
+#[test]
+fn run_extra_args_with_empty_string() {
+    use crate::tools::CargoRun;
+
+    // Encoding boundary: empty string in extra_args
+    let run = CargoRun {
+        extra_args: Some(vec!["".into()]),
+        ..CargoRun::default()
+    };
+    let args = run.build_args();
+    assert_eq!(
+        args,
+        vec!["run", ""],
+        "empty string extra_arg should be passed through verbatim"
+    );
+}
+
+#[test]
+fn bench_extra_args_with_whitespace() {
+    use crate::tools::CargoBench;
+
+    // Encoding boundary: whitespace-only string in extra_args
+    let bench = CargoBench {
+        package: None,
+        bench_name: None,
+        baseline: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["  ".into()]),
+    };
+    let args = bench.build_args();
+    assert_eq!(
+        args,
+        vec!["bench", "  "],
+        "whitespace-only extra_arg should be passed through verbatim"
+    );
+}
