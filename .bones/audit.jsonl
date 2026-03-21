@@ -34,3 +34,7 @@
 {"timestamp":"2026-03-21T20:44:09.550797+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-jh1"}}
 {"timestamp":"2026-03-21T20:44:09.551222+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-jh1"}}
 {"timestamp":"2026-03-21T21:27:48.008950+00:00","actor":"Seth","event_type":"updated","task_id":"cm-jh1","details":{"status":"active"}}
+{"timestamp":"2026-03-21T21:47:26.895145+00:00","actor":"Seth","event_type":"logged","task_id":"cm-jh1","details":{"message":"Acceptance verified via live MCP calls: clippy all_targets, test nextest (with no_capture + test_name), fmt check/write modes, doc with no_deps/document_private_items. All 7 calls produced correct commands. CLAUDE.md and README.md already updated in 1eaf976. No stale cargo_fmt_check references remain. 28/28 tests pass via nextest."}}
+{"timestamp":"2026-03-21T21:47:31.030170+00:00","actor":"Seth","event_type":"closed","task_id":"cm-jh1","details":{"notes":null}}
+{"timestamp":"2026-03-21T21:47:33.930761+00:00","actor":"Seth","event_type":"closed","task_id":"cm-paw","details":{"notes":null}}
+{"timestamp":"2026-03-21T21:47:38.682772+00:00","actor":"Seth","event_type":"logged","task_id":"cm-paw","details":{"message":"Phase 1 complete. All 4 requirements delivered (R1-R4): clippy all_targets, test nextest, fmt rename with check param, cargo_doc tool. Acceptance task cm-jh1 verified via live MCP calls. 8/8 success criteria met. Phase 2 (cm-c1g: extra_args passthrough) now unblocked."}}

@@ -1,10 +1,12 @@
 ---
 id: cm-jh1
 title: 'Phase 1 Acceptance: Individual Tool Enhancements'
-status: active
+status: closed
 type: task
 parent: cm-paw
 ---
+
+
 
 
 
@@ -35,3 +37,7 @@ Phase 1 sub-epic cm-paw complete — all R1-R4 implementation tasks closed (cm-i
 - Test with `use_nextest: true` runs via nextest
 - Fmt in both check and write modes
 - Doc tool generates documentation
+
+## Log
+
+- [2026-03-21T21:47:26Z] [Seth] Acceptance verified via live MCP calls: clippy all_targets, test nextest (with no_capture + test_name), fmt check/write modes, doc with no_deps/document_private_items. All 7 calls produced correct commands. CLAUDE.md and README.md already updated in 1eaf976. No stale cargo_fmt_check references remain. 28/28 tests pass via nextest.

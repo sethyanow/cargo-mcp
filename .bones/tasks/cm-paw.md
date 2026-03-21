@@ -1,12 +1,14 @@
 ---
 id: cm-paw
 title: 'Phase 1: Individual Tool Enhancements'
-status: open
+status: closed
 type: epic
 priority: 1
 depends_on: [cm-ie5, cm-z97, cm-f9o, cm-viy, cm-jh1]
 parent: cm-1k8
 ---
+
+
 
 
 
@@ -52,8 +54,8 @@ R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_
 
 ## Acceptance Requirements
 **Agent Documentation:**
-- [ ] README.md: update tool list if it documents available tools
-- [ ] Update examples if any reference cargo_fmt_check
+- [x] README.md: update tool list if it documents available tools
+- [x] Update examples if any reference cargo_fmt_check
 
 **User Walkthrough Must Cover:**
 - Clippy with `all_targets: true` lints test code
@@ -61,3 +63,7 @@ R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_
 - Fmt in both check and write modes
 - Doc tool generates documentation
 - At least one error path (e.g., nextest not installed)
+
+## Log
+
+- [2026-03-21T21:47:38Z] [Seth] Phase 1 complete. All 4 requirements delivered (R1-R4): clippy all_targets, test nextest, fmt rename with check param, cargo_doc tool. Acceptance task cm-jh1 verified via live MCP calls. 8/8 success criteria met. Phase 2 (cm-c1g: extra_args passthrough) now unblocked.
