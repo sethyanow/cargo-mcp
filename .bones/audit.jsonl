@@ -9,3 +9,4 @@
 {"timestamp":"2026-03-21T19:08:16.779617+00:00","actor":"Seth","event_type":"created","task_id":"cm-ie5","details":{}}
 {"timestamp":"2026-03-21T19:08:27.660768+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-ie5"}}
 {"timestamp":"2026-03-21T19:08:27.661210+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-ie5"}}
+{"timestamp":"2026-03-21T19:26:29.421688+00:00","actor":"Seth","event_type":"updated","task_id":"cm-ie5","details":{"status":"active"}}
