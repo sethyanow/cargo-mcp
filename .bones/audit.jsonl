@@ -1,0 +1,11 @@
+{"timestamp":"2026-03-21T19:06:36.416486+00:00","actor":"Seth","event_type":"created","task_id":"cm-1k8","details":{}}
+{"timestamp":"2026-03-21T19:07:37.844210+00:00","actor":"Seth","event_type":"created","task_id":"cm-paw","details":{}}
+{"timestamp":"2026-03-21T19:07:38.242386+00:00","actor":"Seth","event_type":"created","task_id":"cm-c1g","details":{}}
+{"timestamp":"2026-03-21T19:07:41.459781+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-1k8","details":{"kind":"parent-child","to":"cm-paw"}}
+{"timestamp":"2026-03-21T19:07:41.460263+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-1k8","details":{"kind":"blocks","to":"cm-paw"}}
+{"timestamp":"2026-03-21T19:07:41.480045+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-1k8","details":{"kind":"parent-child","to":"cm-c1g"}}
+{"timestamp":"2026-03-21T19:07:41.480481+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-1k8","details":{"kind":"blocks","to":"cm-c1g"}}
+{"timestamp":"2026-03-21T19:07:41.498050+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-paw"}}
+{"timestamp":"2026-03-21T19:08:16.779617+00:00","actor":"Seth","event_type":"created","task_id":"cm-ie5","details":{}}
+{"timestamp":"2026-03-21T19:08:27.660768+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-ie5"}}
+{"timestamp":"2026-03-21T19:08:27.661210+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-ie5"}}
