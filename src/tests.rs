@@ -534,6 +534,412 @@ fn doc_all_fields_set() {
     );
 }
 
+// ── CargoCheck tests ──────────────────────────────────────────────────
+
+#[test]
+fn check_default_produces_minimal_args() {
+    use crate::tools::CargoCheck;
+
+    let check = CargoCheck {
+        package: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = check.build_args();
+    assert_eq!(args, vec!["check"], "default CargoCheck should produce only ['check']");
+}
+
+#[test]
+fn check_extra_args_appended() {
+    use crate::tools::CargoCheck;
+
+    let check = CargoCheck {
+        package: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--all-targets".into()]),
+    };
+    let args = check.build_args();
+    assert_eq!(
+        args,
+        vec!["check", "--all-targets"],
+        "extra_args should be appended after tool flags"
+    );
+}
+
+// ── CargoClean tests ─────────────────────────────────────────────────
+
+#[test]
+fn clean_default_produces_minimal_args() {
+    use crate::tools::CargoClean;
+
+    let clean = CargoClean {
+        package: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = clean.build_args();
+    assert_eq!(args, vec!["clean"], "default CargoClean should produce only ['clean']");
+}
+
+#[test]
+fn clean_extra_args_appended() {
+    use crate::tools::CargoClean;
+
+    let clean = CargoClean {
+        package: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--target-dir".into(), "/tmp".into()]),
+    };
+    let args = clean.build_args();
+    assert_eq!(
+        args,
+        vec!["clean", "--target-dir", "/tmp"],
+        "extra_args should be appended after tool flags"
+    );
+}
+
+// ── CargoBuild tests ─────────────────────────────────────────────────
+
+#[test]
+fn build_default_produces_minimal_args() {
+    use crate::tools::CargoBuild;
+
+    let build = CargoBuild {
+        package: None,
+        release: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = build.build_args();
+    assert_eq!(args, vec!["build"], "default CargoBuild should produce only ['build']");
+}
+
+#[test]
+fn build_extra_args_appended() {
+    use crate::tools::CargoBuild;
+
+    let build = CargoBuild {
+        package: None,
+        release: Some(true),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--jobs".into(), "4".into()]),
+    };
+    let args = build.build_args();
+    assert_eq!(
+        args,
+        vec!["build", "--release", "--jobs", "4"],
+        "extra_args should appear after --release"
+    );
+}
+
+// ── CargoRemove tests ────────────────────────────────────────────────
+
+#[test]
+fn remove_default_produces_minimal_args() {
+    use crate::tools::CargoRemove;
+
+    let remove = CargoRemove {
+        dependencies: vec!["serde".into()],
+        package: None,
+        dev: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = remove.build_args();
+    assert_eq!(
+        args,
+        vec!["remove", "serde"],
+        "CargoRemove with one dep should produce ['remove', 'serde']"
+    );
+}
+
+#[test]
+fn remove_extra_args_appended() {
+    use crate::tools::CargoRemove;
+
+    let remove = CargoRemove {
+        dependencies: vec!["serde".into()],
+        package: None,
+        dev: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--dry-run".into()]),
+    };
+    let args = remove.build_args();
+    assert_eq!(
+        args,
+        vec!["remove", "serde", "--dry-run"],
+        "extra_args should appear after dependencies"
+    );
+}
+
+// ── CargoUpdate tests ────────────────────────────────────────────────
+
+#[test]
+fn update_default_produces_minimal_args() {
+    use crate::tools::CargoUpdate;
+
+    let update = CargoUpdate {
+        package: None,
+        dependencies: None,
+        dry_run: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = update.build_args();
+    assert_eq!(args, vec!["update"], "default CargoUpdate should produce only ['update']");
+}
+
+#[test]
+fn update_extra_args_appended() {
+    use crate::tools::CargoUpdate;
+
+    let update = CargoUpdate {
+        package: None,
+        dependencies: None,
+        dry_run: Some(true),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--recursive".into()]),
+    };
+    let args = update.build_args();
+    assert_eq!(
+        args,
+        vec!["update", "--dry-run", "--recursive"],
+        "extra_args should appear after --dry-run"
+    );
+}
+
+// ── CargoAdd tests ───────────────────────────────────────────────────
+
+#[test]
+fn add_default_produces_minimal_args() {
+    use crate::tools::CargoAdd;
+
+    let add = CargoAdd {
+        dependencies: vec!["serde".into()],
+        package: None,
+        dev: None,
+        optional: None,
+        features: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = add.build_args();
+    assert_eq!(
+        args,
+        vec!["add", "serde"],
+        "CargoAdd with one dep should produce ['add', 'serde']"
+    );
+}
+
+#[test]
+fn add_extra_args_appended() {
+    use crate::tools::CargoAdd;
+
+    let add = CargoAdd {
+        dependencies: vec!["serde".into()],
+        package: None,
+        dev: None,
+        optional: None,
+        features: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--offline".into()]),
+    };
+    let args = add.build_args();
+    assert_eq!(
+        args,
+        vec!["add", "serde", "--offline"],
+        "extra_args should appear after dependencies"
+    );
+}
+
+// ── adversarial: simple tools ─────────────────────────────────────────
+
+#[test]
+fn add_empty_features_vec_no_flag() {
+    use crate::tools::CargoAdd;
+
+    let add = CargoAdd {
+        dependencies: vec!["serde".into()],
+        package: None,
+        dev: None,
+        optional: None,
+        features: Some(vec![]),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    let args = add.build_args();
+    assert_eq!(
+        args,
+        vec!["add", "serde"],
+        "empty features vec should not produce --features flag"
+    );
+    assert!(
+        !args.contains(&"--features".to_string()),
+        "--features must not appear with empty vec"
+    );
+}
+
+#[test]
+fn add_all_fields_set_ordering() {
+    use crate::tools::CargoAdd;
+
+    let add = CargoAdd {
+        dependencies: vec!["serde".into(), "tokio".into()],
+        package: Some("my-crate".into()),
+        dev: Some(true),
+        optional: Some(true),
+        features: Some(vec!["derive".into(), "full".into()]),
+        toolchain: Some("nightly".into()),
+        cargo_env: None,
+        extra_args: Some(vec!["--offline".into()]),
+    };
+    let args = add.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "add",
+            "--package", "my-crate",
+            "--dev",
+            "--optional",
+            "--features", "derive,full",
+            "serde", "tokio",
+            "--offline",
+        ],
+        "all fields set should match exact ordering: flags → deps → extra_args"
+    );
+    // toolchain is NOT in build_args
+    assert!(!args.contains(&"nightly".to_string()));
+}
+
+#[test]
+fn remove_multiple_deps_with_extra_args() {
+    use crate::tools::CargoRemove;
+
+    let remove = CargoRemove {
+        dependencies: vec!["serde".into(), "tokio".into(), "anyhow".into()],
+        package: Some("my-crate".into()),
+        dev: Some(true),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--dry-run".into()]),
+    };
+    let args = remove.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "remove",
+            "--package", "my-crate",
+            "--dev",
+            "serde", "tokio", "anyhow",
+            "--dry-run",
+        ],
+        "deps must come before extra_args even with multiple deps"
+    );
+}
+
+#[test]
+fn update_all_fields_set_ordering() {
+    use crate::tools::CargoUpdate;
+
+    let update = CargoUpdate {
+        package: Some("my-crate".into()),
+        dependencies: Some(vec!["serde".into(), "tokio".into()]),
+        dry_run: Some(true),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--recursive".into()]),
+    };
+    let args = update.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "update",
+            "--package", "my-crate",
+            "--dry-run",
+            "--package", "serde",
+            "--package", "tokio",
+            "--recursive",
+        ],
+        "ordering: --package pkg → --dry-run → per-dep --package → extra_args"
+    );
+}
+
+#[test]
+fn check_build_args_idempotent() {
+    use crate::tools::CargoCheck;
+
+    let check = CargoCheck {
+        package: Some("foo".into()),
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--all-targets".into()]),
+    };
+    let first = check.build_args();
+    let second = check.build_args();
+    assert_eq!(first, second, "build_args must be idempotent (second run)");
+}
+
+#[test]
+fn add_semantically_hostile_extra_args() {
+    use crate::tools::CargoAdd;
+
+    // extra_args containing "--package" — conflicts with tool's own --package
+    // Per anti-pattern: no validation, pass through verbatim
+    let add = CargoAdd {
+        dependencies: vec!["serde".into()],
+        package: Some("my-crate".into()),
+        dev: None,
+        optional: None,
+        features: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--package".into(), "other-crate".into()]),
+    };
+    let args = add.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "add",
+            "--package", "my-crate",
+            "serde",
+            "--package", "other-crate",
+        ],
+        "hostile extra_args with --package should pass through verbatim"
+    );
+}
+
+#[test]
+fn build_with_unicode_package() {
+    use crate::tools::CargoBuild;
+
+    let build = CargoBuild {
+        package: Some("日本語-crate".into()),
+        release: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--features".into(), "фича".into()]),
+    };
+    let args = build.build_args();
+    assert_eq!(
+        args,
+        vec!["build", "--package", "日本語-crate", "--features", "фича"],
+        "unicode in package and extra_args must survive clone"
+    );
+}
+
 // ── extra_args tests ──────────────────────────────────────────────────
 
 #[test]

@@ -34,6 +34,11 @@ pub struct CargoRemove {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(last = true)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl WithExamples for CargoRemove {
@@ -47,6 +52,7 @@ impl WithExamples for CargoRemove {
                     dev: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -57,6 +63,7 @@ impl WithExamples for CargoRemove {
                     dev: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -67,9 +74,37 @@ impl WithExamples for CargoRemove {
                     dev: Some(true),
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
         ]
+    }
+}
+
+impl CargoRemove {
+    /// Build the cargo remove argument list.
+    pub fn build_args(&self) -> Vec<String> {
+        let mut args = vec!["remove".to_string()];
+
+        if let Some(ref package) = self.package {
+            args.push("--package".to_string());
+            args.push(package.clone());
+        }
+
+        if self.dev.unwrap_or(false) {
+            args.push("--dev".to_string());
+        }
+
+        // Add the dependencies to remove
+        for dep in &self.dependencies {
+            args.push(dep.clone());
+        }
+
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
+        }
+
+        args
     }
 }
 
@@ -80,28 +115,15 @@ impl Tool<CargoTools> for CargoRemove {
         }
 
         let project_path = state.ensure_rust_project(None)?;
-        
+        let args = self.build_args();
+
         // Use toolchain from args, session default, or none
-        let toolchain = self.toolchain
+        let toolchain = self
+            .toolchain
             .or_else(|| state.get_default_toolchain(None).unwrap_or(None));
 
-
-        let mut args = vec!["remove"];
-        
-        if let Some(ref package) = self.package {
-            args.extend_from_slice(&["--package", package]);
-        }
-
-        if self.dev.unwrap_or(false) {
-            args.push("--dev");
-        }
-
-        // Add the dependencies to remove
-        for dep in &self.dependencies {
-            args.push(dep);
-        }
-
-        let cmd = create_cargo_command(&args, toolchain.as_deref(), self.cargo_env.as_ref());
+        let args_refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+        let cmd = create_cargo_command(&args_refs, toolchain.as_deref(), self.cargo_env.as_ref());
         execute_cargo_command(cmd, &project_path, "cargo remove")
     }
 }
