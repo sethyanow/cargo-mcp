@@ -5,7 +5,7 @@ mcplease::tools!(
     (CargoCheck, cargo_check, "cargo_check"),
     (CargoClippy, cargo_clippy, "cargo_clippy"),
     (CargoTest, cargo_test, "cargo_test"),
-    (CargoFmtCheck, cargo_fmt_check, "cargo_fmt_check"),
+    (CargoFmt, cargo_fmt, "cargo_fmt"),
     (CargoBuild, cargo_build, "cargo_build"),
     (CargoBench, cargo_bench, "cargo_bench"),
     (CargoAdd, cargo_add, "cargo_add"),

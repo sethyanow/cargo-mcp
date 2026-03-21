@@ -1,10 +1,11 @@
 ---
 id: cm-f9o
 title: Rename CargoFmtCheck to CargoFmt with check param
-status: open
+status: active
 type: task
 parent: cm-paw
 ---
+
 
 ## Context
 Phase 1 sub-epic cm-paw, parent epic cm-1k8. Third task — refactors existing CargoFmtCheck tool.

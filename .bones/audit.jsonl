@@ -21,3 +21,4 @@
 {"timestamp":"2026-03-21T19:55:06.016281+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-f9o"}}
 {"timestamp":"2026-03-21T19:55:06.016736+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-f9o"}}
 {"timestamp":"2026-03-21T19:55:48.661609+00:00","actor":"Seth","event_type":"logged","task_id":"cm-z97","details":{"message":"Debrief: No workarounds, no surprises. build_args() pattern from cm-ie5 applied cleanly. SRE added step 5a (Some(false) edge case test). Adversarial battery found no bugs — empty, dense, special chars, flag-like names all pass through correctly. Reflections: skeleton matched reality exactly. Remaining Phase 1 work (R3 CargoFmt rename, R4 CargoDoc) still accurate. No user corrections needed."}}
+{"timestamp":"2026-03-21T19:59:07.275746+00:00","actor":"Seth","event_type":"updated","task_id":"cm-f9o","details":{"status":"active"}}

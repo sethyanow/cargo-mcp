@@ -316,3 +316,64 @@ fn test_name_resembling_flag() {
         "test_name that looks like a flag should be passed through verbatim"
     );
 }
+
+#[test]
+fn fmt_check_mode_produces_check_flag() {
+    use crate::tools::CargoFmt;
+
+    let fmt = CargoFmt {
+        check: None,
+        ..CargoFmt::default()
+    };
+    let args = fmt.build_args();
+    assert_eq!(
+        args,
+        vec!["fmt", "--check"],
+        "default (None) check should produce ['fmt', '--check']"
+    );
+}
+
+#[test]
+fn fmt_write_mode_no_check_flag() {
+    use crate::tools::CargoFmt;
+
+    let fmt = CargoFmt {
+        check: Some(false),
+        ..CargoFmt::default()
+    };
+    let args = fmt.build_args();
+    assert_eq!(
+        args,
+        vec!["fmt"],
+        "check: false should produce ['fmt'] without --check"
+    );
+}
+
+#[test]
+fn fmt_explicit_true_check_flag() {
+    use crate::tools::CargoFmt;
+
+    let fmt = CargoFmt {
+        check: Some(true),
+        ..CargoFmt::default()
+    };
+    let args = fmt.build_args();
+    assert_eq!(
+        args,
+        vec!["fmt", "--check"],
+        "check: Some(true) should produce ['fmt', '--check']"
+    );
+}
+
+#[test]
+fn fmt_default_produces_minimal_args() {
+    use crate::tools::CargoFmt;
+
+    let fmt = CargoFmt::default();
+    let args = fmt.build_args();
+    assert_eq!(
+        args,
+        vec!["fmt", "--check"],
+        "CargoFmt::default() should produce ['fmt', '--check']"
+    );
+}
