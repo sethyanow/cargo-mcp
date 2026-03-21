@@ -8,6 +8,7 @@ parent: cm-c1g
 
 
 
+
 ## Context
 Phase 2 of cm-1k8 (Cargo MCP Tool Enhancements). cm-tb9 (closed) added `extra_args` to the 4 tools with `build_args()`. This task adds `extra_args` to the 6 "simple" tools that have no `--` separator. These tools currently construct args inline in `execute()` using `&str` — they need `build_args()` extraction for testability (established pattern from Phase 1).
 
@@ -145,3 +146,7 @@ Run all tests (should be ~50: 38 existing + 12 new = 6 baseline + 6 extra_args).
 - NO skipping build_args() extraction — inline splice in execute() is not testable
 - NO adding extra_args to SetWorkingDirectory (not a cargo command) without user decision
 - NO reordering args in build_args() relative to current execute() — baseline tests enforce this. If a baseline test fails, the build_args() ordering is wrong, not the test.
+
+## Log
+
+- [2026-03-21T23:15:42Z] [Seth] Debrief: 6 tools (check, build, add, remove, update, clean) got extra_args + build_args(). SRE caught 3 wrong arg orderings in skeleton before implementation — baseline tests enforced correctness. 57 tests total (50 functional + 7 adversarial). No workarounds. Reflections: SRE ordering corrections were the highest-value finding. Skeleton 'read execute() carefully' was insufficient without explicit ordering. No user corrections. Scoped cm-e3a for final 2 tools (bench, run) with conditional -- separators.
