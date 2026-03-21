@@ -1,10 +1,11 @@
 ---
 id: cm-e3a
 title: Add extra_args to bench and run tools (conditional -- separators)
-status: active
+status: closed
 type: task
 parent: cm-c1g
 ---
+
 
 
 ## Context
