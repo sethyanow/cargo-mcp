@@ -30,3 +30,6 @@
 {"timestamp":"2026-03-21T20:35:54.962115+00:00","actor":"Seth","event_type":"updated","task_id":"cm-viy","details":{"status":"active"}}
 {"timestamp":"2026-03-21T20:43:15.699496+00:00","actor":"Seth","event_type":"closed","task_id":"cm-viy","details":{"notes":null}}
 {"timestamp":"2026-03-21T20:43:23.356630+00:00","actor":"Seth","event_type":"logged","task_id":"cm-viy","details":{"message":"Debrief: Implemented CargoDoc tool following established build_args() pattern. 7 behavior tests + 2 adversarial (empty package, flag-like package passthrough). All 28 tests pass, clippy+fmt clean. execute() wired to build_args() following CargoFmt pattern. Reflections: Skeleton was accurate — all 12 steps executed as written, no surprises. No user corrections needed. Cross-pollination: adversarial passthrough tests (empty string, flag-like input) established as pattern across tools."}}
+{"timestamp":"2026-03-21T20:43:54.168193+00:00","actor":"Seth","event_type":"created","task_id":"cm-jh1","details":{}}
+{"timestamp":"2026-03-21T20:44:09.550797+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-jh1"}}
+{"timestamp":"2026-03-21T20:44:09.551222+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-jh1"}}

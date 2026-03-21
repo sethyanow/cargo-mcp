@@ -4,9 +4,11 @@ title: 'Phase 1: Individual Tool Enhancements'
 status: open
 type: epic
 priority: 1
-depends_on: [cm-ie5, cm-z97, cm-f9o, cm-viy]
+depends_on: [cm-ie5, cm-z97, cm-f9o, cm-viy, cm-jh1]
 parent: cm-1k8
 ---
+
+
 
 
 
