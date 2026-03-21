@@ -1,11 +1,13 @@
 ---
 id: cm-z97
 title: Add use_nextest param to CargoTest
-status: active
+status: closed
 type: task
 priority: 1
 parent: cm-paw
 ---
+
+
 
 
 
@@ -37,13 +39,13 @@ R2: Add `use_nextest: Option<bool>` field to `CargoTest` struct. When true:
 9. Full suite + clippy + fmt, commit, push.
 
 ## Success Criteria
-- [ ] `CargoTest` has `use_nextest: Option<bool>` field
-- [ ] When `use_nextest` is true, args start with `["nextest", "run"]` not `["test"]`
-- [ ] When `use_nextest` is true and `no_capture` is true, args contain `--no-capture` (not `-- --nocapture`)
-- [ ] When `use_nextest` is None/false, behavior unchanged (standard `cargo test` with `-- --nocapture`)
-- [ ] Example added to `WithExamples`
-- [ ] Tests verify generated args via `build_args()` (not struct field existence)
-- [ ] `cargo test` passes
+- [x] `CargoTest` has `use_nextest: Option<bool>` field
+- [x] When `use_nextest` is true, args start with `["nextest", "run"]` not `["test"]`
+- [x] When `use_nextest` is true and `no_capture` is true, args contain `--no-capture` (not `-- --nocapture`)
+- [x] When `use_nextest` is None/false, behavior unchanged (standard `cargo test` with `-- --nocapture`)
+- [x] Example added to `WithExamples`
+- [x] Tests verify generated args via `build_args()` (not struct field existence)
+- [x] `cargo test` passes
 
 ## Anti-Patterns
 - NO creating a separate CargoNextest struct (refactor existing CargoTest — epic anti-pattern)
@@ -59,3 +61,7 @@ R2: Add `use_nextest: Option<bool>` field to `CargoTest` struct. When true:
 - **`Some(false)` edge case:** MCP clients may send `use_nextest: false` explicitly. `unwrap_or(false)` handles it, but if branching logic were changed to check `is_some()` instead of value, `Some(false)` would silently enable nextest. Explicit test required (step 5a).
 - **Command label must vary:** `execute_cargo_command` takes a `command_name` label for display. Must pass `"cargo nextest run"` in nextest mode, not static `"cargo test"`. Step 7 covers this.
 - **Nextest not installed:** `cargo nextest run` when nextest isn't installed produces `error: no such command: nextest`. This is cargo's native error — do not catch or wrap it (anti-pattern: NO validating nextest installation).
+
+## Log
+
+- [2026-03-21T19:55:48Z] [Seth] Debrief: No workarounds, no surprises. build_args() pattern from cm-ie5 applied cleanly. SRE added step 5a (Some(false) edge case test). Adversarial battery found no bugs — empty, dense, special chars, flag-like names all pass through correctly. Reflections: skeleton matched reality exactly. Remaining Phase 1 work (R3 CargoFmt rename, R4 CargoDoc) still accurate. No user corrections needed.

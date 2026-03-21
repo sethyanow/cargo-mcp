@@ -4,9 +4,11 @@ title: 'Phase 1: Individual Tool Enhancements'
 status: open
 type: epic
 priority: 1
-depends_on: [cm-ie5, cm-z97]
+depends_on: [cm-ie5, cm-z97, cm-f9o]
 parent: cm-1k8
 ---
+
+
 
 
 
@@ -27,8 +29,8 @@ R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_
 
 ## Success Criteria
 - [x] `cargo_clippy` with `all_targets: true` includes `--all-targets` in command
-- [ ] `cargo_test` with `use_nextest: true` produces `cargo nextest run` command
-- [ ] `cargo_test` with `use_nextest: true, no_capture: true` uses `--no-capture` not `-- --nocapture`
+- [x] `cargo_test` with `use_nextest: true` produces `cargo nextest run` command
+- [x] `cargo_test` with `use_nextest: true, no_capture: true` uses `--no-capture` not `-- --nocapture`
 - [ ] `cargo_fmt_check` tool name gone; `cargo_fmt` tool exists
 - [ ] `cargo_fmt` defaults to check mode; `check: false` runs write mode
 - [ ] `cargo_doc` tool produces correct `cargo doc` commands
