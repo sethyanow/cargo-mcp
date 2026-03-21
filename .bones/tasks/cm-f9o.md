@@ -8,6 +8,7 @@ parent: cm-paw
 
 
 
+
 ## Context
 Phase 1 sub-epic cm-paw, parent epic cm-1k8. Third task — refactors existing CargoFmtCheck tool.
 File: `src/tools/cargo_fmt_check.rs` → rename to `src/tools/cargo_fmt.rs`. Struct `CargoFmtCheck` → `CargoFmt`.
@@ -55,3 +56,7 @@ R3: Rename `CargoFmtCheck` struct to `CargoFmt`. Rename file from `cargo_fmt_che
 - No existing tests reference `CargoFmtCheck` — only `tools.rs` and the tool file itself (7 references total, 2 files)
 - This is a breaking MCP tool name change: clients using `cargo_fmt_check` will need to update to `cargo_fmt`
 - `git mv` preserves file history; manual rename + git add does not
+
+## Log
+
+- [2026-03-21T20:07:42Z] [Seth] Debrief: Clean rename + bool param. Ownership issue in execute() resolved by reordering build_args() before toolchain consumption. No workarounds. Reflections: Skeleton was accurate, all 11 steps matched. No surprises. build_args pattern now established across 3 tools. No user corrections needed. Scoped cm-viy (CargoDoc R4) as next task.
