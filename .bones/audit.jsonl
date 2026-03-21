@@ -38,3 +38,6 @@
 {"timestamp":"2026-03-21T21:47:31.030170+00:00","actor":"Seth","event_type":"closed","task_id":"cm-jh1","details":{"notes":null}}
 {"timestamp":"2026-03-21T21:47:33.930761+00:00","actor":"Seth","event_type":"closed","task_id":"cm-paw","details":{"notes":null}}
 {"timestamp":"2026-03-21T21:47:38.682772+00:00","actor":"Seth","event_type":"logged","task_id":"cm-paw","details":{"message":"Phase 1 complete. All 4 requirements delivered (R1-R4): clippy all_targets, test nextest, fmt rename with check param, cargo_doc tool. Acceptance task cm-jh1 verified via live MCP calls. 8/8 success criteria met. Phase 2 (cm-c1g: extra_args passthrough) now unblocked."}}
+{"timestamp":"2026-03-21T21:51:04.169716+00:00","actor":"Seth","event_type":"created","task_id":"cm-tb9","details":{}}
+{"timestamp":"2026-03-21T21:51:07.713471+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"parent-child","to":"cm-tb9"}}
+{"timestamp":"2026-03-21T21:51:07.713882+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-tb9"}}
