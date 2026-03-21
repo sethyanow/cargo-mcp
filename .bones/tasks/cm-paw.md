@@ -24,7 +24,7 @@ R3 (from parent): CargoFmtCheck → CargoFmt rename, `check` param (default true
 R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_private_items`.
 
 ## Success Criteria
-- [ ] `cargo_clippy` with `all_targets: true` includes `--all-targets` in command
+- [x] `cargo_clippy` with `all_targets: true` includes `--all-targets` in command
 - [ ] `cargo_test` with `use_nextest: true` produces `cargo nextest run` command
 - [ ] `cargo_test` with `use_nextest: true, no_capture: true` uses `--no-capture` not `-- --nocapture`
 - [ ] `cargo_fmt_check` tool name gone; `cargo_fmt` tool exists

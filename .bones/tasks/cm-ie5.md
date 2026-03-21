@@ -1,11 +1,12 @@
 ---
 id: cm-ie5
 title: Add all_targets param to CargoClippy
-status: active
+status: closed
 type: task
 priority: 1
 parent: cm-paw
 ---
+
 
 
 
@@ -24,12 +25,12 @@ R1: Add `all_targets: Option<bool>` field to `CargoClippy` struct. When true, in
 4. Add test(s) in `src/tests.rs` that verify command arg generation. Testing approach: build the args vector the same way `execute()` does, pass to `create_cargo_command()`, then inspect the `Command` via `cmd.get_program()` and `cmd.get_args()` to verify `--all-targets` is present and positioned before `--`. Test both `Some(true)` and `None`/default cases.
 
 ## Success Criteria
-- [ ] `CargoClippy` has `all_targets: Option<bool>` field
-- [ ] When `all_targets` is true, `--all-targets` appears in the command before `--`
-- [ ] When `all_targets` is None/false, behavior unchanged
-- [ ] Example added to `WithExamples`
-- [ ] Test verifies `--all-targets` appears in `Command::get_args()` before `--` (not just struct field existence)
-- [ ] `cargo test` passes
+- [x] `CargoClippy` has `all_targets: Option<bool>` field
+- [x] When `all_targets` is true, `--all-targets` appears in the command before `--`
+- [x] When `all_targets` is None/false, behavior unchanged
+- [x] Example added to `WithExamples`
+- [x] Test verifies `--all-targets` appears in `Command::get_args()` before `--` (not just struct field existence)
+- [x] `cargo test` passes
 
 ## Anti-Patterns
 - NO making `all_targets` default to true (would change existing behavior for all callers)
