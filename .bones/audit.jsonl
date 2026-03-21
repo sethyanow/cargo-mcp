@@ -43,3 +43,6 @@
 {"timestamp":"2026-03-21T21:51:07.713882+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-tb9"}}
 {"timestamp":"2026-03-21T22:35:23.774725+00:00","actor":"Seth","event_type":"updated","task_id":"cm-tb9","details":{"status":"active"}}
 {"timestamp":"2026-03-21T22:43:40.895632+00:00","actor":"Seth","event_type":"closed","task_id":"cm-tb9","details":{"notes":null}}
+{"timestamp":"2026-03-21T22:46:00.115566+00:00","actor":"Seth","event_type":"created","task_id":"cm-w82","details":{}}
+{"timestamp":"2026-03-21T22:46:04.165589+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"parent-child","to":"cm-w82"}}
+{"timestamp":"2026-03-21T22:46:04.166026+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-w82"}}
