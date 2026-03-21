@@ -38,6 +38,11 @@ pub struct CargoDoc {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(skip)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl CargoDoc {
@@ -54,6 +59,9 @@ impl CargoDoc {
         if self.document_private_items.unwrap_or(false) {
             args.push("--document-private-items".to_string());
         }
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
+        }
         args
     }
 }
@@ -69,6 +77,7 @@ impl WithExamples for CargoDoc {
                     document_private_items: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -79,6 +88,7 @@ impl WithExamples for CargoDoc {
                     document_private_items: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -89,6 +99,7 @@ impl WithExamples for CargoDoc {
                     document_private_items: Some(true),
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -99,6 +110,7 @@ impl WithExamples for CargoDoc {
                     document_private_items: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
         ]

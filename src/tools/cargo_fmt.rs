@@ -27,6 +27,11 @@ pub struct CargoFmt {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(skip)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl CargoFmt {
@@ -35,6 +40,9 @@ impl CargoFmt {
         let mut args = vec!["fmt".to_string()];
         if self.check.unwrap_or(true) {
             args.push("--check".to_string());
+        }
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
         }
         args
     }
@@ -49,6 +57,7 @@ impl WithExamples for CargoFmt {
                     check: None,
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -57,6 +66,7 @@ impl WithExamples for CargoFmt {
                     check: None,
                     toolchain: Some("nightly".into()),
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -65,6 +75,7 @@ impl WithExamples for CargoFmt {
                     check: Some(false),
                     toolchain: None,
                     cargo_env: None,
+                    extra_args: None,
                 },
             },
         ]

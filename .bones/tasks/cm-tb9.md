@@ -1,10 +1,11 @@
 ---
 id: cm-tb9
 title: Add extra_args to Phase 1 tools (clippy, test, fmt, doc)
-status: open
+status: active
 type: task
 parent: cm-c1g
 ---
+
 
 ## Context
 Phase 2 of cm-1k8 (Cargo MCP Tool Enhancements). Phase 1 (cm-paw) is closed — all 4 tools have `build_args()` methods. This task adds the `extra_args` field to the 4 tools that already have `build_args()`, validating the splice pattern before applying it to the remaining 8 tools.
@@ -100,3 +101,9 @@ Run all 28+ tests. Verify no regressions. `cargo_check`, `cargo_clippy { all_tar
 - NO validation or filtering of extra_args (from parent epic)
 - NO default extra_args values — None/empty only
 - NO changing existing build_args() behavior when extra_args is None
+- NO appending extra_args unconditionally at end of args vec — clippy has `--` separator, must splice before it
+
+## Key Considerations
+- `extra_args: Some(vec![])` must behave identically to `extra_args: None` (no args added). Tests should include at least one empty-vec case.
+- In CargoTest standard mode without `no_capture`, there is no `--` separator — extra_args are simply appended. The test for "before separator" only applies when `no_capture: true`.
+- Existing tests construct structs with all fields explicitly set. New tests must follow this pattern, adding `extra_args: None` to existing test struct literals is NOT required (this is a follow-up task for the remaining 8 tools).

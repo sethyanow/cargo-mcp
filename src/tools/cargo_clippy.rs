@@ -36,6 +36,11 @@ pub struct CargoClippy {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(skip)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl WithExamples for CargoClippy {
@@ -49,6 +54,7 @@ impl WithExamples for CargoClippy {
                     fix: None,
                     cargo_env: None,
                     all_targets: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -59,6 +65,7 @@ impl WithExamples for CargoClippy {
                     fix: None,
                     cargo_env: None,
                     all_targets: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -69,6 +76,7 @@ impl WithExamples for CargoClippy {
                     fix: Some(true),
                     cargo_env: None,
                     all_targets: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -79,6 +87,7 @@ impl WithExamples for CargoClippy {
                     fix: None,
                     cargo_env: None,
                     all_targets: None,
+                    extra_args: None,
                 },
             },
             Example {
@@ -89,6 +98,7 @@ impl WithExamples for CargoClippy {
                     fix: None,
                     cargo_env: None,
                     all_targets: Some(true),
+                    extra_args: None,
                 },
             },
         ]
@@ -113,7 +123,11 @@ impl CargoClippy {
             args.push("--all-targets".to_string());
         }
 
-        // Add clippy arguments
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
+        }
+
+        // Add clippy arguments after -- separator
         args.extend_from_slice(&["--".to_string(), "-D".to_string(), "warnings".to_string()]);
 
         args

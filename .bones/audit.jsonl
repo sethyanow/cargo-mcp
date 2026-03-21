@@ -41,3 +41,4 @@
 {"timestamp":"2026-03-21T21:51:04.169716+00:00","actor":"Seth","event_type":"created","task_id":"cm-tb9","details":{}}
 {"timestamp":"2026-03-21T21:51:07.713471+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"parent-child","to":"cm-tb9"}}
 {"timestamp":"2026-03-21T21:51:07.713882+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-tb9"}}
+{"timestamp":"2026-03-21T22:35:23.774725+00:00","actor":"Seth","event_type":"updated","task_id":"cm-tb9","details":{"status":"active"}}

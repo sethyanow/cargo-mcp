@@ -41,6 +41,11 @@ pub struct CargoTest {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(long)]
     pub use_nextest: Option<bool>,
+
+    /// Additional cargo arguments passed before any `--` separator
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(skip)]
+    pub extra_args: Option<Vec<String>>,
 }
 
 impl WithExamples for CargoTest {
@@ -113,6 +118,10 @@ impl CargoTest {
 
         if let Some(ref test_name) = self.test_name {
             args.push(test_name.clone());
+        }
+
+        if let Some(ref extra) = self.extra_args {
+            args.extend(extra.iter().cloned());
         }
 
         if self.no_capture.unwrap_or(false) {

@@ -16,6 +16,7 @@ fn clippy_all_targets_produces_flag() {
         fix: None,
         cargo_env: None,
         all_targets: Some(true),
+        extra_args: None,
     };
     let args = clippy.build_args();
     let all_targets_pos = args
@@ -42,6 +43,7 @@ fn clippy_default_has_no_all_targets() {
         fix: None,
         cargo_env: None,
         all_targets: None,
+        extra_args: None,
     };
     let args = clippy.build_args();
     assert!(
@@ -60,6 +62,7 @@ fn clippy_all_fields_none_produces_minimal_args() {
         fix: None,
         cargo_env: None,
         all_targets: None,
+        extra_args: None,
     };
     let args = clippy.build_args();
     assert_eq!(args, vec!["clippy", "--", "-D", "warnings"]);
@@ -75,6 +78,7 @@ fn clippy_all_fields_set_ordering() {
         fix: Some(true),
         cargo_env: None,
         all_targets: Some(true),
+        extra_args: None,
     };
     let args = clippy.build_args();
     let separator_pos = args
@@ -103,6 +107,7 @@ fn clippy_explicit_false_no_all_targets() {
         fix: None,
         cargo_env: None,
         all_targets: Some(false),
+        extra_args: None,
     };
     let args = clippy.build_args();
     assert!(
@@ -231,6 +236,7 @@ fn test_nextest_all_fields() {
         no_capture: Some(true),
         toolchain: Some("nightly".into()),
         cargo_env: None,
+        extra_args: None,
     };
     let args = test_cmd.build_args();
     assert_eq!(
@@ -269,6 +275,7 @@ fn test_standard_all_fields_set_ordering() {
         no_capture: Some(true),
         toolchain: Some("stable".into()),
         cargo_env: None,
+        extra_args: None,
     };
     let args = test_cmd.build_args();
     assert_eq!(
@@ -387,6 +394,7 @@ fn fmt_all_fields_set_no_leakage() {
         check: Some(false),
         toolchain: Some("nightly".into()),
         cargo_env: Some(HashMap::from([("RUSTFLAGS".into(), "-Awarnings".into())])),
+        extra_args: None,
     };
     let args = fmt.build_args();
     assert_eq!(
@@ -505,6 +513,7 @@ fn doc_all_fields_set() {
         document_private_items: Some(true),
         toolchain: Some("nightly".into()),
         cargo_env: None,
+        extra_args: None,
     };
     let args = doc.build_args();
     assert_eq!(
@@ -522,5 +531,273 @@ fn doc_all_fields_set() {
     assert!(
         !args.contains(&"nightly".to_string()),
         "toolchain should not appear in build_args"
+    );
+}
+
+// ── extra_args tests ──────────────────────────────────────────────────
+
+#[test]
+fn clippy_extra_args_before_separator() {
+    use crate::tools::CargoClippy;
+
+    let clippy = CargoClippy {
+        package: None,
+        toolchain: None,
+        fix: None,
+        all_targets: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--no-default-features".into()]),
+    };
+    let args = clippy.build_args();
+    let extra_pos = args
+        .iter()
+        .position(|a| a == "--no-default-features")
+        .expect("--no-default-features should be present");
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("-- separator should be present");
+    assert!(
+        extra_pos < separator_pos,
+        "extra_args must appear before -- separator, got extra at {extra_pos}, separator at {separator_pos}"
+    );
+}
+
+#[test]
+fn clippy_extra_args_empty_vec_unchanged() {
+    use crate::tools::CargoClippy;
+
+    let with_empty = CargoClippy {
+        package: None,
+        toolchain: None,
+        fix: None,
+        all_targets: None,
+        cargo_env: None,
+        extra_args: Some(vec![]),
+    };
+    let with_none = CargoClippy {
+        package: None,
+        toolchain: None,
+        fix: None,
+        all_targets: None,
+        cargo_env: None,
+        extra_args: None,
+    };
+    assert_eq!(
+        with_empty.build_args(),
+        with_none.build_args(),
+        "extra_args: Some(vec![]) must produce same args as extra_args: None"
+    );
+}
+
+#[test]
+fn test_standard_extra_args_before_separator() {
+    use crate::tools::CargoTest;
+
+    let t = CargoTest {
+        package: None,
+        test_name: None,
+        no_capture: Some(true),
+        toolchain: None,
+        cargo_env: None,
+        use_nextest: None,
+        extra_args: Some(vec!["--lib".into()]),
+    };
+    let args = t.build_args();
+    let extra_pos = args
+        .iter()
+        .position(|a| a == "--lib")
+        .expect("--lib should be present");
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("-- separator should be present with no_capture");
+    assert!(
+        extra_pos < separator_pos,
+        "extra_args must appear before -- separator, got extra at {extra_pos}, separator at {separator_pos}"
+    );
+}
+
+#[test]
+fn test_standard_extra_args_no_separator() {
+    use crate::tools::CargoTest;
+
+    let t = CargoTest {
+        package: None,
+        test_name: None,
+        no_capture: None,
+        toolchain: None,
+        cargo_env: None,
+        use_nextest: None,
+        extra_args: Some(vec!["--lib".into()]),
+    };
+    let args = t.build_args();
+    assert!(
+        args.contains(&"--lib".to_string()),
+        "--lib should be present"
+    );
+    assert!(
+        !args.contains(&"--".to_string()),
+        "-- separator should not be present without no_capture"
+    );
+}
+
+#[test]
+fn test_nextest_extra_args() {
+    use crate::tools::CargoTest;
+
+    let t = CargoTest {
+        package: None,
+        test_name: None,
+        no_capture: None,
+        toolchain: None,
+        cargo_env: None,
+        use_nextest: Some(true),
+        extra_args: Some(vec!["--lib".into()]),
+    };
+    let args = t.build_args();
+    let run_pos = args
+        .iter()
+        .position(|a| a == "run")
+        .expect("run should be present for nextest");
+    let extra_pos = args
+        .iter()
+        .position(|a| a == "--lib")
+        .expect("--lib should be present");
+    assert!(
+        extra_pos > run_pos,
+        "--lib must appear after 'run', got run at {run_pos}, extra at {extra_pos}"
+    );
+}
+
+#[test]
+fn fmt_extra_args_appended() {
+    use crate::tools::CargoFmt;
+
+    let fmt = CargoFmt {
+        check: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--config-path".into(), "custom.toml".into()]),
+    };
+    let args = fmt.build_args();
+    // Default check=true, so --check should be present, then extra_args after
+    assert_eq!(
+        args,
+        vec!["fmt", "--check", "--config-path", "custom.toml"],
+        "extra_args should appear after tool flags"
+    );
+}
+
+#[test]
+fn doc_extra_args_appended() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        package: None,
+        no_deps: None,
+        document_private_items: None,
+        toolchain: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--all-features".into()]),
+    };
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec!["doc", "--no-deps", "--all-features"],
+        "extra_args should appear after tool flags"
+    );
+}
+
+// ── adversarial extra_args tests ──────────────────────────────────────
+
+#[test]
+fn clippy_extra_args_containing_separator() {
+    use crate::tools::CargoClippy;
+
+    // Semantically hostile: user passes "--" as an extra_arg.
+    // Per anti-pattern: no validation. It should pass through verbatim,
+    // creating two "--" in the args. The first "--" (from extra_args) and
+    // the second (from clippy's own separator) are both present.
+    let clippy = CargoClippy {
+        package: None,
+        toolchain: None,
+        fix: None,
+        all_targets: None,
+        cargo_env: None,
+        extra_args: Some(vec!["--".into(), "-W".into(), "clippy::all".into()]),
+    };
+    let args = clippy.build_args();
+    // extra_args should appear before clippy's own "--"
+    // Expected: ["clippy", "--", "-W", "clippy::all", "--", "-D", "warnings"]
+    assert_eq!(
+        args,
+        vec!["clippy", "--", "-W", "clippy::all", "--", "-D", "warnings"],
+        "extra_args with '--' should pass through verbatim before clippy's own separator"
+    );
+}
+
+#[test]
+fn clippy_extra_args_multiple_before_separator() {
+    use crate::tools::CargoClippy;
+
+    // Redundant: multiple extra_args including duplicates
+    let clippy = CargoClippy {
+        package: Some("foo".into()),
+        toolchain: None,
+        fix: None,
+        all_targets: Some(true),
+        cargo_env: None,
+        extra_args: Some(vec![
+            "--no-default-features".into(),
+            "--features".into(),
+            "serde".into(),
+            "--features".into(),
+            "tokio".into(),
+        ]),
+    };
+    let args = clippy.build_args();
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("-- separator should be present");
+    // All extra_args must be before the separator
+    for extra in &["--no-default-features", "--features", "serde", "tokio"] {
+        let pos = args
+            .iter()
+            .position(|a| a == extra)
+            .unwrap_or_else(|| panic!("{extra} should be present"));
+        assert!(
+            pos < separator_pos,
+            "{extra} at {pos} must be before -- at {separator_pos}"
+        );
+    }
+    // Duplicates preserved (--features appears twice)
+    assert_eq!(
+        args.iter().filter(|a| *a == "--features").count(),
+        2,
+        "duplicate --features should be preserved, not deduped"
+    );
+}
+
+#[test]
+fn test_extra_args_with_empty_string() {
+    use crate::tools::CargoTest;
+
+    // Encoding boundary: empty string in extra_args
+    let t = CargoTest {
+        package: None,
+        test_name: None,
+        no_capture: None,
+        toolchain: None,
+        cargo_env: None,
+        use_nextest: None,
+        extra_args: Some(vec!["".into()]),
+    };
+    let args = t.build_args();
+    assert_eq!(
+        args,
+        vec!["test", ""],
+        "empty string extra_arg should be passed through verbatim"
     );
 }
