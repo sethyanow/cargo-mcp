@@ -31,8 +31,8 @@ R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_
 - [x] `cargo_clippy` with `all_targets: true` includes `--all-targets` in command
 - [x] `cargo_test` with `use_nextest: true` produces `cargo nextest run` command
 - [x] `cargo_test` with `use_nextest: true, no_capture: true` uses `--no-capture` not `-- --nocapture`
-- [ ] `cargo_fmt_check` tool name gone; `cargo_fmt` tool exists
-- [ ] `cargo_fmt` defaults to check mode; `check: false` runs write mode
+- [x] `cargo_fmt_check` tool name gone; `cargo_fmt` tool exists
+- [x] `cargo_fmt` defaults to check mode; `check: false` runs write mode
 - [ ] `cargo_doc` tool produces correct `cargo doc` commands
 - [ ] All existing tests pass
 - [ ] New behavior covered by tests

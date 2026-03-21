@@ -1,10 +1,11 @@
 ---
 id: cm-f9o
 title: Rename CargoFmtCheck to CargoFmt with check param
-status: active
+status: closed
 type: task
 parent: cm-paw
 ---
+
 
 
 ## Context

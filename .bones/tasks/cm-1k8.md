@@ -28,8 +28,8 @@ R5. All tool structs MUST support an `extra_args` parameter (`Vec<String>`) that
 - [x] `cargo_clippy` with `all_targets: true` produces a command containing `--all-targets`
 - [x] `cargo_test` with `use_nextest: true` produces a command starting with `cargo nextest run`
 - [x] `cargo_test` with `use_nextest: true` and `no_capture: true` uses `--no-capture` (not `-- --nocapture`)
-- [ ] MCP tool `cargo_fmt_check` no longer exists; `cargo_fmt` exists with `check` param
-- [ ] `cargo_fmt` with default params passes `--check`; with `check: false` omits it
+- [x] MCP tool `cargo_fmt_check` no longer exists; `cargo_fmt` exists with `check` param
+- [x] `cargo_fmt` with default params passes `--check`; with `check: false` omits it
 - [ ] `cargo_doc` tool exists and produces correct `cargo doc` commands
 - [ ] All tools accept `extra_args` and splice them before any `--` separator
 - [ ] All existing tests pass
