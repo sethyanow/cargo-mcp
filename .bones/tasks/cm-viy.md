@@ -1,10 +1,12 @@
 ---
 id: cm-viy
 title: Add CargoDoc tool (R4)
-status: active
+status: closed
 type: task
 parent: cm-paw
 ---
+
+
 
 
 
@@ -34,16 +36,16 @@ R4: New CargoDoc tool with `package`, `toolchain`, `cargo_env` (standard params)
 12. Full suite + clippy + fmt, commit, push.
 
 ## Success Criteria
-- [ ] `CargoDoc` struct exists in `src/tools/cargo_doc.rs`
-- [ ] MCP tool name is `cargo_doc`
-- [ ] Registered in `tools!` macro
-- [ ] Default behavior (no_deps: None) passes `--no-deps`
-- [ ] `no_deps: Some(false)` omits `--no-deps`
-- [ ] `document_private_items: Some(true)` passes `--document-private-items`
-- [ ] `package: Some(x)` passes `--package x`
-- [ ] `build_args()` method exists and is tested
-- [ ] `cargo test` passes (all 21+ tests)
-- [ ] Examples include all param combinations
+- [x] `CargoDoc` struct exists in `src/tools/cargo_doc.rs`
+- [x] MCP tool name is `cargo_doc`
+- [x] Registered in `tools!` macro
+- [x] Default behavior (no_deps: None) passes `--no-deps`
+- [x] `no_deps: Some(false)` omits `--no-deps`
+- [x] `document_private_items: Some(true)` passes `--document-private-items`
+- [x] `package: Some(x)` passes `--package x`
+- [x] `build_args()` method exists and is tested
+- [x] `cargo test` passes (all 28 tests)
+- [x] Examples include all param combinations
 
 ## Anti-Patterns
 - NO defaulting `no_deps` to false (docs without `--no-deps` rebuild all dependencies — slow and usually unwanted)
@@ -57,3 +59,7 @@ R4: New CargoDoc tool with `package`, `toolchain`, `cargo_env` (standard params)
 - `--no-deps` is the safe default because building deps docs is slow and rarely useful in MCP context
 - `--document-private-items` uses a double-dash long flag (not `--private`)
 - Field ordering in struct: domain-specific params first (no_deps, document_private_items), then standard (package, toolchain, cargo_env) — matches how R4 spec lists them
+
+## Log
+
+- [2026-03-21T20:43:23Z] [Seth] Debrief: Implemented CargoDoc tool following established build_args() pattern. 7 behavior tests + 2 adversarial (empty package, flag-like package passthrough). All 28 tests pass, clippy+fmt clean. execute() wired to build_args() following CargoFmt pattern. Reflections: Skeleton was accurate — all 12 steps executed as written, no surprises. No user corrections needed. Cross-pollination: adversarial passthrough tests (empty string, flag-like input) established as pattern across tools.

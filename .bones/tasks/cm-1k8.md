@@ -30,10 +30,10 @@ R5. All tool structs MUST support an `extra_args` parameter (`Vec<String>`) that
 - [x] `cargo_test` with `use_nextest: true` and `no_capture: true` uses `--no-capture` (not `-- --nocapture`)
 - [x] MCP tool `cargo_fmt_check` no longer exists; `cargo_fmt` exists with `check` param
 - [x] `cargo_fmt` with default params passes `--check`; with `check: false` omits it
-- [ ] `cargo_doc` tool exists and produces correct `cargo doc` commands
+- [x] `cargo_doc` tool exists and produces correct `cargo doc` commands
 - [ ] All tools accept `extra_args` and splice them before any `--` separator
-- [ ] All existing tests pass
-- [ ] New behavior covered by tests
+- [x] All existing tests pass
+- [x] New behavior covered by tests
 
 ## Anti-Patterns (FORBIDDEN)
 

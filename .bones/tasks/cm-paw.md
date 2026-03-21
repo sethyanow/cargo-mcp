@@ -35,9 +35,9 @@ R4 (from parent): New CargoDoc tool with standard params + `no_deps`, `document_
 - [x] `cargo_test` with `use_nextest: true, no_capture: true` uses `--no-capture` not `-- --nocapture`
 - [x] `cargo_fmt_check` tool name gone; `cargo_fmt` tool exists
 - [x] `cargo_fmt` defaults to check mode; `check: false` runs write mode
-- [ ] `cargo_doc` tool produces correct `cargo doc` commands
-- [ ] All existing tests pass
-- [ ] New behavior covered by tests
+- [x] `cargo_doc` tool produces correct `cargo doc` commands
+- [x] All existing tests pass
+- [x] New behavior covered by tests
 
 ## Anti-Patterns
 - NO separate CargoNextest or new CargoFmt struct (refactor, not duplicate)
