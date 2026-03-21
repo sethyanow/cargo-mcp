@@ -1,10 +1,11 @@
 ---
 id: cm-8r2
 title: 'Phase 2 Acceptance: Extra Args Passthrough'
-status: open
+status: active
 type: task
 parent: cm-c1g
 ---
+
 
 
 
@@ -12,21 +13,37 @@ parent: cm-c1g
 Acceptance gate for sub-epic cm-c1g (Phase 2: Extra Args Passthrough). All implementation tasks are closed (cm-tb9, cm-w82, cm-e3a). All 5 sub-epic success criteria are checked. This task verifies the phase is complete and updates documentation.
 
 ## Requirements
-1. Update CLAUDE.md to document extra_args capability
-2. Provide user walkthrough with CLI commands verifying Phase 2's work
+1. Update README.md to document extra_args capability (per sub-epic cm-c1g acceptance requirements)
+2. Update CLAUDE.md tool pattern section to reflect extra_args as a standard field
+3. Provide user walkthrough with MCP tool calls verifying Phase 2's work
 
 ## Implementation
 
 ### Deliverable 1: Agent Documentation
-Update CLAUDE.md to reflect extra_args on all tools.
+
+**README.md** (user-facing):
+- Update line 63 ("Every tool accepts `toolchain` ... and `cargo_env`...") to include `extra_args`
+- Add a brief description of what extra_args does (passes arbitrary cargo-level arguments before any `--` separator)
+
+**CLAUDE.md** (developer-facing):
+- Update the "Tool pattern" section to mention `extra_args: Option<Vec<String>>` as a standard field on all tool structs
+- Update the "Build & Test Commands" section header comment to mention extra_args capability
 
 ### Deliverable 2: User Walkthrough
-CLI commands with observable outcomes covering:
-- Passing `--no-default-features` via extra_args on at least one tool
-- Passing `--features "foo"` via extra_args
-- Passing `--lib` to cargo_test via extra_args
-- Verify extra_args don't interfere with tool-specific args
+MCP tool calls with observable outcomes covering all 4 sub-epic acceptance items:
+1. Passing `--no-default-features` via extra_args on at least one tool
+2. Passing `--features "foo"` via extra_args
+3. Passing `--lib` to cargo_test via extra_args
+4. Verify extra_args don't interfere with tool-specific args (e.g., clippy with all_targets + extra_args)
+
+## Anti-Patterns
+- NO documenting extra_args without verifying the test suite passes first
+- NO presenting walkthrough commands without actually running them to verify output
+- NO updating only one of README.md/CLAUDE.md — both must be updated
 
 ## Success Criteria
-- [ ] CLAUDE.md updated with extra_args documentation
-- [ ] User walkthrough presented and verified
+- [x] README.md updated: extra_args documented alongside toolchain and cargo_env
+- [x] CLAUDE.md updated: tool pattern section reflects extra_args as standard field
+- [x] Full test suite passes (70 tests, verified before presenting walkthrough)
+- [ ] User walkthrough covers all 4 acceptance requirement items from cm-c1g
+- [ ] User walkthrough presented with actual MCP tool call outputs

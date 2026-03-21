@@ -60,7 +60,13 @@ Call `set_working_directory` first to point at a Rust project (must contain `Car
 | `cargo_update` | Update dependencies |
 | `cargo_clean` | Remove build artifacts |
 
-Every tool accepts `toolchain` (e.g., `"nightly"`) and `cargo_env` (a map of environment variables) parameters.
+Every tool accepts `toolchain` (e.g., `"nightly"`), `cargo_env` (a map of environment variables), and `extra_args` (a list of additional cargo-level arguments) parameters.
+
+`extra_args` passes arbitrary flags to cargo before any `--` separator. This covers flags without dedicated parameters, such as `--no-default-features`, `--features`, `--lib`, and `--all-targets`:
+
+```json
+{ "extra_args": ["--no-default-features", "--features", "serde"] }
+```
 
 ## How it works
 

@@ -1514,3 +1514,13 @@ fn bench_extra_args_with_whitespace() {
         "whitespace-only extra_arg should be passed through verbatim"
     );
 }
+
+#[test]
+fn tools_list_exposes_extra_args() {
+    let tools = Tools::tools_list();
+    let json = serde_json::to_string(&tools).unwrap();
+    assert!(
+        json.contains("extra_args"),
+        "extra_args should appear in the tools_list output sent to MCP clients"
+    );
+}

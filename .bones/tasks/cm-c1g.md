@@ -45,7 +45,7 @@ R5 (from parent): All tool structs MUST support `extra_args: Option<Vec<String>>
 
 ## Acceptance Requirements
 **Agent Documentation:**
-- [ ] README.md: document extra_args capability
+- [x] README.md: document extra_args capability
 
 **User Walkthrough Must Cover:**
 - Passing `--no-default-features` via extra_args on at least one tool

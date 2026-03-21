@@ -71,6 +71,8 @@ Every tool follows the same structure:
    - Builds an args vec (e.g., `["clippy", "--package", pkg, "--", "-D", "warnings"]`)
    - Passes to `create_cargo_command(&args, toolchain, env)` then `execute_cargo_command(cmd, &path, label)`
 
+All tool structs include `extra_args: Option<Vec<String>>` for passing arbitrary cargo-level arguments (before any `--` separator). This is spliced into the args vec before tool-specific trailing args.
+
 All optional fields use `Option<T>` with `#[serde(skip_serializing_if = "Option::is_none")]`.
 
 ### State isolation
