@@ -8,6 +8,7 @@ parent: cm-c1g
 
 
 
+
 ## Context
 Phase 2 of cm-1k8 (Cargo MCP Tool Enhancements). Phase 1 (cm-paw) is closed — all 4 tools have `build_args()` methods. This task adds the `extra_args` field to the 4 tools that already have `build_args()`, validating the splice pattern before applying it to the remaining 8 tools.
 
@@ -108,3 +109,7 @@ Run all 28+ tests. Verify no regressions. `cargo_check`, `cargo_clippy { all_tar
 - `extra_args: Some(vec![])` must behave identically to `extra_args: None` (no args added). Tests should include at least one empty-vec case.
 - In CargoTest standard mode without `no_capture`, there is no `--` separator — extra_args are simply appended. The test for "before separator" only applies when `no_capture: true`.
 - Existing tests construct structs with all fields explicitly set. New tests must follow this pattern, adding `extra_args: None` to existing test struct literals is NOT required (this is a follow-up task for the remaining 8 tools).
+
+## Log
+
+- [2026-03-21T22:46:58Z] [Seth] Debrief: Clean implementation — all 4 tools got extra_args with correct splice placement (before -- for clippy/test, append for fmt/doc). 10 new tests + 3 adversarial. No workarounds, no surprises. Skeleton was exact match. Reflections: no corrections needed, no cross-pollination. Next task cm-w82 scoped for 6 simple tools (no separator).
