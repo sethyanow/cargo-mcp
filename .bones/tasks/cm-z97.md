@@ -1,11 +1,12 @@
 ---
 id: cm-z97
 title: Add use_nextest param to CargoTest
-status: open
+status: active
 type: task
 priority: 1
 parent: cm-paw
 ---
+
 
 
 
@@ -29,6 +30,7 @@ R2: Add `use_nextest: Option<bool>` field to `CargoTest` struct. When true:
 3. GREEN: implement nextest branching in `build_args()`. If `use_nextest.unwrap_or(false)`: start with `["nextest", "run"]`, use `--no-capture` for no_capture; else standard `["test"]` with `-- --nocapture`.
 4. Write test `test_nextest_no_capture_flag` — `use_nextest: true`, `no_capture: true`. Assert `--no-capture` present, `--nocapture` absent, no `--` separator. Should already PASS from step 3.
 5. Write test `test_standard_mode_no_capture` — `use_nextest: None`, `no_capture: true`. Assert `--` then `--nocapture` (original behavior preserved).
+5a. Write test `test_explicit_false_no_nextest` — `use_nextest: Some(false)`, verify args identical to `None` case (starts with `["test"]`, no nextest args). Mirrors `clippy_explicit_false_no_all_targets` pattern.
 6. Write test `test_nextest_all_fields` — all fields set. Assert full ordering: `["nextest", "run", "--package", "foo", "bar", "--no-capture"]`.
 7. Refactor `execute()` to call `build_args()`, convert `Vec<String>` to `Vec<&str>` for `create_cargo_command`. Update command label to "cargo nextest run" when in nextest mode.
 8. Add `WithExamples` entry for nextest mode (non-logic change, docs escape hatch).
@@ -54,3 +56,6 @@ R2: Add `use_nextest: Option<bool>` field to `CargoTest` struct. When true:
 - `create_cargo_command` handles `rustup run <toolchain> cargo` prefix — `["nextest", "run"]` works correctly because `rustup run nightly cargo nextest run` is valid
 - Use `crate::tools::CargoTest` in tests (not module path — macro keeps modules private)
 - In nextest mode, `test_name` is a positional filter (same as standard mode)
+- **`Some(false)` edge case:** MCP clients may send `use_nextest: false` explicitly. `unwrap_or(false)` handles it, but if branching logic were changed to check `is_some()` instead of value, `Some(false)` would silently enable nextest. Explicit test required (step 5a).
+- **Command label must vary:** `execute_cargo_command` takes a `command_name` label for display. Must pass `"cargo nextest run"` in nextest mode, not static `"cargo test"`. Step 7 covers this.
+- **Nextest not installed:** `cargo nextest run` when nextest isn't installed produces `error: no such command: nextest`. This is cargo's native error — do not catch or wrap it (anti-pattern: NO validating nextest installation).

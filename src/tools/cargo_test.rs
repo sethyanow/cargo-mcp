@@ -36,6 +36,11 @@ pub struct CargoTest {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(skip)]
     pub cargo_env: Option<HashMap<String, String>>,
+
+    /// Use cargo-nextest instead of cargo test
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[arg(long)]
+    pub use_nextest: Option<bool>,
 }
 
 impl WithExamples for CargoTest {
@@ -79,7 +84,47 @@ impl WithExamples for CargoTest {
                     ..Self::default()
                 },
             },
+            Example {
+                description: "Run tests using cargo-nextest",
+                item: Self {
+                    use_nextest: Some(true),
+                    ..Self::default()
+                },
+            },
         ]
+    }
+}
+
+impl CargoTest {
+    /// Build the cargo test argument list.
+    pub fn build_args(&self) -> Vec<String> {
+        let nextest = self.use_nextest.unwrap_or(false);
+
+        let mut args = if nextest {
+            vec!["nextest".to_string(), "run".to_string()]
+        } else {
+            vec!["test".to_string()]
+        };
+
+        if let Some(ref package) = self.package {
+            args.push("--package".to_string());
+            args.push(package.clone());
+        }
+
+        if let Some(ref test_name) = self.test_name {
+            args.push(test_name.clone());
+        }
+
+        if self.no_capture.unwrap_or(false) {
+            if nextest {
+                args.push("--no-capture".to_string());
+            } else {
+                args.push("--".to_string());
+                args.push("--nocapture".to_string());
+            }
+        }
+
+        args
     }
 }
 
@@ -87,27 +132,21 @@ impl Tool<CargoTools> for CargoTest {
     fn execute(self, state: &mut CargoTools) -> Result<String> {
         let project_path = state.ensure_rust_project(None)?;
 
+        let args = self.build_args();
+        let nextest = self.use_nextest.unwrap_or(false);
+
         // Use toolchain from args, session default, or none
         let toolchain = self
             .toolchain
             .or_else(|| state.get_default_toolchain(None).unwrap_or(None));
 
-        let mut args = vec!["test"];
-
-        if let Some(ref package) = self.package {
-            args.extend_from_slice(&["--package", package]);
-        }
-
-        if let Some(ref test_name) = self.test_name {
-            args.push(test_name);
-        }
-
-        // Add --nocapture if requested
-        if self.no_capture.unwrap_or(false) {
-            args.extend_from_slice(&["--", "--nocapture"]);
-        }
-
-        let cmd = create_cargo_command(&args, toolchain.as_deref(), self.cargo_env.as_ref());
-        execute_cargo_command(cmd, &project_path, "cargo test")
+        let args_refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+        let cmd = create_cargo_command(&args_refs, toolchain.as_deref(), self.cargo_env.as_ref());
+        let label = if nextest {
+            "cargo nextest run"
+        } else {
+            "cargo test"
+        };
+        execute_cargo_command(cmd, &project_path, label)
     }
 }

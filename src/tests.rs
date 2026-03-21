@@ -135,3 +135,184 @@ fn working_directory_is_per_process() {
         Some(PathBuf::from("/tmp/project-a")),
     );
 }
+
+#[test]
+fn test_nextest_mode_produces_nextest_run() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        use_nextest: Some(true),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        &args[..2],
+        &["nextest", "run"],
+        "nextest mode should produce args starting with ['nextest', 'run']"
+    );
+    assert!(
+        !args.contains(&"test".to_string()),
+        "nextest mode should not contain 'test' subcommand"
+    );
+}
+
+#[test]
+fn test_nextest_no_capture_flag() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        use_nextest: Some(true),
+        no_capture: Some(true),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert!(
+        args.contains(&"--no-capture".to_string()),
+        "nextest mode should use --no-capture flag"
+    );
+    assert!(
+        !args.contains(&"--nocapture".to_string()),
+        "nextest mode should not use --nocapture"
+    );
+    assert!(
+        !args.contains(&"--".to_string()),
+        "nextest mode should not have -- separator for no-capture"
+    );
+}
+
+#[test]
+fn test_standard_mode_no_capture() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        no_capture: Some(true),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(args[0], "test", "standard mode should start with 'test'");
+    let separator_pos = args
+        .iter()
+        .position(|a| a == "--")
+        .expect("standard mode should have -- separator");
+    assert_eq!(
+        args[separator_pos + 1],
+        "--nocapture",
+        "standard mode should use --nocapture after --"
+    );
+}
+
+#[test]
+fn test_explicit_false_no_nextest() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        use_nextest: Some(false),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args[0], "test",
+        "explicit false should produce standard 'test' subcommand"
+    );
+    assert!(
+        !args.contains(&"nextest".to_string()),
+        "explicit false should not contain 'nextest'"
+    );
+}
+
+#[test]
+fn test_nextest_all_fields() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        use_nextest: Some(true),
+        package: Some("foo".into()),
+        test_name: Some("bar".into()),
+        no_capture: Some(true),
+        toolchain: Some("nightly".into()),
+        cargo_env: None,
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args,
+        vec!["nextest", "run", "--package", "foo", "bar", "--no-capture"],
+        "nextest with all fields should produce correct arg ordering"
+    );
+    // toolchain is NOT in build_args (handled by execute via create_cargo_command)
+    assert!(
+        !args.contains(&"nightly".to_string()),
+        "toolchain should not appear in build_args"
+    );
+}
+
+#[test]
+fn test_all_fields_none_produces_minimal_test_args() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest::default();
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args,
+        vec!["test"],
+        "default CargoTest should produce only ['test']"
+    );
+}
+
+#[test]
+fn test_standard_all_fields_set_ordering() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        use_nextest: None,
+        package: Some("my-crate".into()),
+        test_name: Some("test_foo".into()),
+        no_capture: Some(true),
+        toolchain: Some("stable".into()),
+        cargo_env: None,
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "test",
+            "--package",
+            "my-crate",
+            "test_foo",
+            "--",
+            "--nocapture"
+        ],
+        "standard mode with all fields should produce correct ordering"
+    );
+}
+
+#[test]
+fn test_package_with_special_chars() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        package: Some("my crate".into()),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args,
+        vec!["test", "--package", "my crate"],
+        "package with spaces should be passed through verbatim"
+    );
+}
+
+#[test]
+fn test_name_resembling_flag() {
+    use crate::tools::CargoTest;
+
+    let test_cmd = CargoTest {
+        test_name: Some("--help".into()),
+        ..CargoTest::default()
+    };
+    let args = test_cmd.build_args();
+    assert_eq!(
+        args,
+        vec!["test", "--help"],
+        "test_name that looks like a flag should be passed through verbatim"
+    );
+}
