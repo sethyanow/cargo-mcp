@@ -7,12 +7,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Use the cargo-mcp MCP tools for all cargo operations** (build, check, clippy, test, fmt). Set the working directory first via `set_working_directory`, then call the appropriate tool. Do not shell out with `cargo` directly when an MCP tool exists.
 
 ```
-cargo_check         # verify compilation
-cargo_clippy        # lint (currently lib/bin only; --all-targets planned)
-cargo_test          # run all tests
-cargo_test { test_name: "test_name" }  # run a single test
-cargo_fmt_check     # check formatting
-cargo_build         # build
+cargo_check                                    # verify compilation
+cargo_clippy                                   # lint (lib/bin by default)
+cargo_clippy { all_targets: true }             # lint tests, examples, benchmarks too
+cargo_test                                     # run all tests
+cargo_test { test_name: "test_name" }          # run a single test
+cargo_test { use_nextest: true }               # run via cargo-nextest
+cargo_fmt                                      # check formatting (default: check mode)
+cargo_fmt { check: false }                     # fix formatting (write mode)
+cargo_doc                                      # generate docs (skips deps by default)
+cargo_doc { document_private_items: true }     # include private items
+cargo_doc { no_deps: false }                   # include dependency docs
+cargo_build                                    # build
 ```
 
 If you must run cargo directly (e.g., for operations without an MCP tool), use `cargo +stable` or omit toolchain to use the default.

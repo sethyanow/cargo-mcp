@@ -48,9 +48,10 @@ Call `set_working_directory` first to point at a Rust project (must contain `Car
 | Tool | Purpose |
 |------|---------|
 | `cargo_check` | Verify code compiles |
-| `cargo_clippy` | Run Clippy linter |
-| `cargo_test` | Run tests (specific test via `test_name` param) |
-| `cargo_fmt_check` | Check formatting without modifying files |
+| `cargo_clippy` | Run Clippy linter (`all_targets` to include tests/examples/benches) |
+| `cargo_test` | Run tests (`test_name` to filter, `use_nextest` for cargo-nextest) |
+| `cargo_fmt` | Check or fix formatting (`check` param, default true) |
+| `cargo_doc` | Generate documentation (`no_deps` default true, `document_private_items`) |
 | `cargo_build` | Build (debug or release mode) |
 | `cargo_bench` | Run benchmarks |
 | `cargo_run` | Run a binary or example |
