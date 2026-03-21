@@ -377,3 +377,25 @@ fn fmt_default_produces_minimal_args() {
         "CargoFmt::default() should produce ['fmt', '--check']"
     );
 }
+
+#[test]
+fn fmt_all_fields_set_no_leakage() {
+    use crate::tools::CargoFmt;
+    use std::collections::HashMap;
+
+    let fmt = CargoFmt {
+        check: Some(false),
+        toolchain: Some("nightly".into()),
+        cargo_env: Some(HashMap::from([("RUSTFLAGS".into(), "-Awarnings".into())])),
+    };
+    let args = fmt.build_args();
+    assert_eq!(
+        args,
+        vec!["fmt"],
+        "build_args should only contain fmt args, not toolchain or env"
+    );
+    assert!(
+        !args.contains(&"nightly".to_string()),
+        "toolchain should not appear in build_args"
+    );
+}
