@@ -1,10 +1,11 @@
 ---
 id: cm-w82
 title: Add extra_args to remaining simple tools (check, build, add, remove, update, clean)
-status: active
+status: closed
 type: task
 parent: cm-c1g
 ---
+
 
 
 ## Context
@@ -119,17 +120,17 @@ Update execute(). Update WithExamples. Run tests.
 Run all tests (should be ~50: 38 existing + 12 new = 6 baseline + 6 extra_args). `cargo_check`, `cargo_clippy { all_targets: true }`.
 
 ## Success Criteria
-- [ ] CargoCheck has build_args() and extra_args field
-- [ ] CargoBuild has build_args() and extra_args field
-- [ ] CargoAdd has build_args() and extra_args field
-- [ ] CargoRemove has build_args() and extra_args field
-- [ ] CargoUpdate has build_args() and extra_args field
-- [ ] CargoClean has build_args() and extra_args field
-- [ ] All 6 tools append extra_args after tool flags
-- [ ] No validation of extra_args contents
-- [ ] All existing tests pass
-- [ ] New tests verify extra_args for each tool
-- [ ] Each tool has a baseline test verifying build_args() with extra_args: None matches current execute() behavior
+- [x] CargoCheck has build_args() and extra_args field
+- [x] CargoBuild has build_args() and extra_args field
+- [x] CargoAdd has build_args() and extra_args field
+- [x] CargoRemove has build_args() and extra_args field
+- [x] CargoUpdate has build_args() and extra_args field
+- [x] CargoClean has build_args() and extra_args field
+- [x] All 6 tools append extra_args after tool flags
+- [x] No validation of extra_args contents
+- [x] All existing tests pass
+- [x] New tests verify extra_args for each tool
+- [x] Each tool has a baseline test verifying build_args() with extra_args: None matches current execute() behavior
 
 ## Key Considerations
 

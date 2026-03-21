@@ -48,3 +48,4 @@
 {"timestamp":"2026-03-21T22:46:04.166026+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-c1g","details":{"kind":"blocks","to":"cm-w82"}}
 {"timestamp":"2026-03-21T22:46:58.774313+00:00","actor":"Seth","event_type":"logged","task_id":"cm-tb9","details":{"message":"Debrief: Clean implementation — all 4 tools got extra_args with correct splice placement (before -- for clippy/test, append for fmt/doc). 10 new tests + 3 adversarial. No workarounds, no surprises. Skeleton was exact match. Reflections: no corrections needed, no cross-pollination. Next task cm-w82 scoped for 6 simple tools (no separator)."}}
 {"timestamp":"2026-03-21T23:05:15.561414+00:00","actor":"Seth","event_type":"updated","task_id":"cm-w82","details":{"status":"active"}}
+{"timestamp":"2026-03-21T23:13:21.037428+00:00","actor":"Seth","event_type":"closed","task_id":"cm-w82","details":{"notes":null}}
