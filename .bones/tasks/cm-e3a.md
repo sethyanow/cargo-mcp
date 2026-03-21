@@ -8,6 +8,7 @@ parent: cm-c1g
 
 
 
+
 ## Context
 Phase 2 of cm-1k8, final implementation task. cm-tb9 (closed) established the extra_args splice-before-separator pattern on clippy/test. cm-w82 (closed) added extra_args to the 6 simple tools (no separator). This task adds extra_args to the last 2 tools — both have conditional `--` separators that require splice-before logic.
 
@@ -107,3 +108,7 @@ Run all tests (should be ~64: 57 existing + 7 new). `cargo_check`, `cargo_clippy
 - NO skipping build_args() extraction — inline splice in execute() is not testable
 - NO reordering args relative to current execute() — baseline tests enforce this
 - NO adding extra_args to SetWorkingDirectory without user decision
+
+## Log
+
+- [2026-03-21T23:30:47Z] [Seth] Debrief: Mechanical implementation following established pattern from cm-tb9. No workarounds, no surprises. Skeleton was perfectly accurate (line numbers, WithExamples patterns, test count prediction). Clippy flagged collapsible_if in CargoRun build_args — used let-chain syntax to fix. Reflections: No surprises, skeleton matched reality, all epic criteria now checked, no reusable patterns beyond what's already documented, no user corrections.
