@@ -27,3 +27,4 @@
 {"timestamp":"2026-03-21T20:07:35.876931+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"parent-child","to":"cm-viy"}}
 {"timestamp":"2026-03-21T20:07:35.877441+00:00","actor":"Seth","event_type":"dep_added","task_id":"cm-paw","details":{"kind":"blocks","to":"cm-viy"}}
 {"timestamp":"2026-03-21T20:07:42.488959+00:00","actor":"Seth","event_type":"logged","task_id":"cm-f9o","details":{"message":"Debrief: Clean rename + bool param. Ownership issue in execute() resolved by reordering build_args() before toolchain consumption. No workarounds. Reflections: Skeleton was accurate, all 11 steps matched. No surprises. build_args pattern now established across 3 tools. No user corrections needed. Scoped cm-viy (CargoDoc R4) as next task."}}
+{"timestamp":"2026-03-21T20:35:54.962115+00:00","actor":"Seth","event_type":"updated","task_id":"cm-viy","details":{"status":"active"}}

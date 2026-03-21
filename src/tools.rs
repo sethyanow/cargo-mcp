@@ -17,5 +17,6 @@ mcplease::tools!(
         set_working_directory,
         "set_working_directory"
     ),
-    (CargoRun, cargo_run, "cargo_run")
+    (CargoRun, cargo_run, "cargo_run"),
+    (CargoDoc, cargo_doc, "cargo_doc")
 );

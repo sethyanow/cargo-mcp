@@ -399,3 +399,128 @@ fn fmt_all_fields_set_no_leakage() {
         "toolchain should not appear in build_args"
     );
 }
+
+#[test]
+fn doc_default_produces_no_deps() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc::default();
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec!["doc", "--no-deps"],
+        "default CargoDoc should produce ['doc', '--no-deps']"
+    );
+}
+
+#[test]
+fn doc_with_deps_no_flag() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        no_deps: Some(false),
+        ..CargoDoc::default()
+    };
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec!["doc"],
+        "no_deps: false should produce ['doc'] without --no-deps"
+    );
+}
+
+#[test]
+fn doc_private_items_flag() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        document_private_items: Some(true),
+        ..CargoDoc::default()
+    };
+    let args = doc.build_args();
+    assert!(
+        args.contains(&"--document-private-items".to_string()),
+        "document_private_items: true should include --document-private-items"
+    );
+}
+
+#[test]
+fn doc_with_package() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        package: Some("foo".into()),
+        ..CargoDoc::default()
+    };
+    let args = doc.build_args();
+    assert!(
+        args.contains(&"--package".to_string()),
+        "should contain --package flag"
+    );
+    assert!(
+        args.contains(&"foo".to_string()),
+        "should contain package name"
+    );
+}
+
+#[test]
+fn doc_empty_package_passed_through() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        package: Some("".into()),
+        ..CargoDoc::default()
+    };
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec!["doc", "--package", "", "--no-deps"],
+        "empty package string should be passed through verbatim"
+    );
+}
+
+#[test]
+fn doc_package_resembling_flag() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        package: Some("--help".into()),
+        ..CargoDoc::default()
+    };
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec!["doc", "--package", "--help", "--no-deps"],
+        "flag-like package name should be passed through verbatim"
+    );
+}
+
+#[test]
+fn doc_all_fields_set() {
+    use crate::tools::CargoDoc;
+
+    let doc = CargoDoc {
+        package: Some("my-lib".into()),
+        no_deps: Some(true),
+        document_private_items: Some(true),
+        toolchain: Some("nightly".into()),
+        cargo_env: None,
+    };
+    let args = doc.build_args();
+    assert_eq!(
+        args,
+        vec![
+            "doc",
+            "--package",
+            "my-lib",
+            "--no-deps",
+            "--document-private-items"
+        ],
+        "all fields set should produce correct arg ordering"
+    );
+    // toolchain is NOT in build_args (handled by execute via create_cargo_command)
+    assert!(
+        !args.contains(&"nightly".to_string()),
+        "toolchain should not appear in build_args"
+    );
+}
