@@ -23,9 +23,9 @@ R5 (from parent): All tool structs MUST support `extra_args: Option<Vec<String>>
 ## Success Criteria
 - [ ] Every tool struct has `extra_args: Option<Vec<String>>` field
 - [ ] Extra args are spliced into command before any `--` separator
-- [ ] Tests verify extra_args appear in generated commands for at least clippy, test, fmt, and doc
-- [ ] No validation of extra_args contents (cargo handles errors)
-- [ ] All existing tests pass
+- [x] Tests verify extra_args appear in generated commands for at least clippy, test, fmt, and doc
+- [x] No validation of extra_args contents (cargo handles errors)
+- [x] All existing tests pass
 
 ## Anti-Patterns
 - NO validating or filtering extra_args (anti-pattern from parent)

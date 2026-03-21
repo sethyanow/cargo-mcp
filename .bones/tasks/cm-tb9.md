@@ -1,10 +1,11 @@
 ---
 id: cm-tb9
 title: Add extra_args to Phase 1 tools (clippy, test, fmt, doc)
-status: active
+status: closed
 type: task
 parent: cm-c1g
 ---
+
 
 
 ## Context
@@ -89,13 +90,13 @@ Add field. Update `build_args()`: append extra_args at end. Update WithExamples.
 Run all 28+ tests. Verify no regressions. `cargo_check`, `cargo_clippy { all_targets: true }`.
 
 ## Success Criteria
-- [ ] CargoClippy extra_args spliced before `--` separator
-- [ ] CargoTest extra_args spliced before `--` in standard mode, appended in nextest mode
-- [ ] CargoFmt extra_args appended after tool flags
-- [ ] CargoDoc extra_args appended after tool flags
-- [ ] No validation of extra_args contents
-- [ ] All existing tests pass
-- [ ] New tests verify extra_args placement for each tool
+- [x] CargoClippy extra_args spliced before `--` separator
+- [x] CargoTest extra_args spliced before `--` in standard mode, appended in nextest mode
+- [x] CargoFmt extra_args appended after tool flags
+- [x] CargoDoc extra_args appended after tool flags
+- [x] No validation of extra_args contents
+- [x] All existing tests pass
+- [x] New tests verify extra_args placement for each tool
 
 ## Anti-Patterns
 - NO validation or filtering of extra_args (from parent epic)
