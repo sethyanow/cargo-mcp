@@ -10,6 +10,7 @@ parent: cm-c1g
 
 
 
+
 ## Context
 Acceptance gate for sub-epic cm-c1g (Phase 2: Extra Args Passthrough). All implementation tasks are closed (cm-tb9, cm-w82, cm-e3a). All 5 sub-epic success criteria are checked. This task verifies the phase is complete and updates documentation.
 
@@ -48,3 +49,7 @@ MCP tool calls with observable outcomes covering all 4 sub-epic acceptance items
 - [x] Full test suite passes (70 tests, verified before presenting walkthrough)
 - [x] User walkthrough covers all 4 acceptance requirement items from cm-c1g
 - [x] User walkthrough presented with actual MCP tool call outputs
+
+## Log
+
+- [2026-03-22T00:27:56Z] [Seth] Debrief: Docs updated (README.md + CLAUDE.md), walkthrough verified all 4 acceptance items via live MCP tool calls. MCP schema caching caused initial walkthrough failure — client needed reconnection after recompilation. SRE caught README.md vs CLAUDE.md discrepancy in original skeleton. Added tools_list_exposes_extra_args integration test (71 total). Reflections: MCP client schema caching is a class of end-to-end bug invisible to unit/integration tests. Saved reference memory for future sessions.
