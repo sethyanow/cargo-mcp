@@ -1,10 +1,12 @@
 ---
 id: cm-8r2
 title: 'Phase 2 Acceptance: Extra Args Passthrough'
-status: open
+status: closed
 type: task
 parent: cm-c1g
+close_notes: 'User accepted walkthrough: all 4 acceptance items verified via live MCP tool calls. Docs updated (README.md + CLAUDE.md). 71 tests pass.'
 ---
+
 
 
 
