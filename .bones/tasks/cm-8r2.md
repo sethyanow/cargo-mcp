@@ -1,10 +1,11 @@
 ---
 id: cm-8r2
 title: 'Phase 2 Acceptance: Extra Args Passthrough'
-status: active
+status: closed
 type: task
 parent: cm-c1g
 ---
+
 
 
 
@@ -45,5 +46,5 @@ MCP tool calls with observable outcomes covering all 4 sub-epic acceptance items
 - [x] README.md updated: extra_args documented alongside toolchain and cargo_env
 - [x] CLAUDE.md updated: tool pattern section reflects extra_args as standard field
 - [x] Full test suite passes (70 tests, verified before presenting walkthrough)
-- [ ] User walkthrough covers all 4 acceptance requirement items from cm-c1g
-- [ ] User walkthrough presented with actual MCP tool call outputs
+- [x] User walkthrough covers all 4 acceptance requirement items from cm-c1g
+- [x] User walkthrough presented with actual MCP tool call outputs
