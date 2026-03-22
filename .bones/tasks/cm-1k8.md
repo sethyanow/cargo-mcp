@@ -1,11 +1,13 @@
 ---
 id: cm-1k8
 title: Cargo MCP Tool Enhancements
-status: open
+status: closed
 type: epic
 priority: 1
 depends_on: [cm-paw, cm-c1g]
+close_notes: 'All requirements (R1-R5) implemented and verified. 71 tests pass, clippy clean, fmt clean. Review-implementation approved: all 9 success criteria met with file:line evidence, 4/4 anti-patterns clear, test content audit passed (zero mocks, distinguishable assertions, adversarial inputs). One out-of-scope finding logged: cmd.output() lacks timeout (pre-existing).'
 ---
+
 
 
 
