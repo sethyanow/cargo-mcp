@@ -547,7 +547,11 @@ fn check_default_produces_minimal_args() {
         extra_args: None,
     };
     let args = check.build_args();
-    assert_eq!(args, vec!["check"], "default CargoCheck should produce only ['check']");
+    assert_eq!(
+        args,
+        vec!["check"],
+        "default CargoCheck should produce only ['check']"
+    );
 }
 
 #[test]
@@ -581,7 +585,11 @@ fn clean_default_produces_minimal_args() {
         extra_args: None,
     };
     let args = clean.build_args();
-    assert_eq!(args, vec!["clean"], "default CargoClean should produce only ['clean']");
+    assert_eq!(
+        args,
+        vec!["clean"],
+        "default CargoClean should produce only ['clean']"
+    );
 }
 
 #[test]
@@ -616,7 +624,11 @@ fn build_default_produces_minimal_args() {
         extra_args: None,
     };
     let args = build.build_args();
-    assert_eq!(args, vec!["build"], "default CargoBuild should produce only ['build']");
+    assert_eq!(
+        args,
+        vec!["build"],
+        "default CargoBuild should produce only ['build']"
+    );
 }
 
 #[test]
@@ -695,7 +707,11 @@ fn update_default_produces_minimal_args() {
         extra_args: None,
     };
     let args = update.build_args();
-    assert_eq!(args, vec!["update"], "default CargoUpdate should produce only ['update']");
+    assert_eq!(
+        args,
+        vec!["update"],
+        "default CargoUpdate should produce only ['update']"
+    );
 }
 
 #[test]
@@ -811,11 +827,14 @@ fn add_all_fields_set_ordering() {
         args,
         vec![
             "add",
-            "--package", "my-crate",
+            "--package",
+            "my-crate",
             "--dev",
             "--optional",
-            "--features", "derive,full",
-            "serde", "tokio",
+            "--features",
+            "derive,full",
+            "serde",
+            "tokio",
             "--offline",
         ],
         "all fields set should match exact ordering: flags → deps → extra_args"
@@ -841,9 +860,12 @@ fn remove_multiple_deps_with_extra_args() {
         args,
         vec![
             "remove",
-            "--package", "my-crate",
+            "--package",
+            "my-crate",
             "--dev",
-            "serde", "tokio", "anyhow",
+            "serde",
+            "tokio",
+            "anyhow",
             "--dry-run",
         ],
         "deps must come before extra_args even with multiple deps"
@@ -867,10 +889,13 @@ fn update_all_fields_set_ordering() {
         args,
         vec![
             "update",
-            "--package", "my-crate",
+            "--package",
+            "my-crate",
             "--dry-run",
-            "--package", "serde",
-            "--package", "tokio",
+            "--package",
+            "serde",
+            "--package",
+            "tokio",
             "--recursive",
         ],
         "ordering: --package pkg → --dry-run → per-dep --package → extra_args"
@@ -913,9 +938,11 @@ fn add_semantically_hostile_extra_args() {
         args,
         vec![
             "add",
-            "--package", "my-crate",
+            "--package",
+            "my-crate",
             "serde",
-            "--package", "other-crate",
+            "--package",
+            "other-crate",
         ],
         "hostile extra_args with --package should pass through verbatim"
     );
@@ -1223,7 +1250,11 @@ fn bench_default_produces_minimal_args() {
         extra_args: None,
     };
     let args = bench.build_args();
-    assert_eq!(args, vec!["bench"], "default bench should produce just [\"bench\"]");
+    assert_eq!(
+        args,
+        vec!["bench"],
+        "default bench should produce just [\"bench\"]"
+    );
 }
 
 #[test]
@@ -1276,7 +1307,14 @@ fn bench_extra_args_no_separator() {
     let args = bench.build_args();
     assert_eq!(
         args,
-        vec!["bench", "--package", "my-lib", "perf_test", "--features", "foo"],
+        vec![
+            "bench",
+            "--package",
+            "my-lib",
+            "perf_test",
+            "--features",
+            "foo"
+        ],
         "extra_args should be appended when no -- separator present"
     );
     assert!(
@@ -1296,7 +1334,11 @@ fn run_default_produces_minimal_args() {
         ..CargoRun::default()
     };
     let args = run.build_args();
-    assert_eq!(args, vec!["run"], "default run should produce just [\"run\"]");
+    assert_eq!(
+        args,
+        vec!["run"],
+        "default run should produce just [\"run\"]"
+    );
 }
 
 #[test]
@@ -1371,14 +1413,19 @@ fn run_all_fields_set_ordering() {
         args,
         vec![
             "run",
-            "--package", "my-crate",
-            "--bin", "worker",
+            "--package",
+            "my-crate",
+            "--bin",
+            "worker",
             "--release",
-            "--features", "feat1",
+            "--features",
+            "feat1",
             "--no-default-features",
-            "--jobs", "4",
+            "--jobs",
+            "4",
             "--",
-            "--config", "prod.toml",
+            "--config",
+            "prod.toml",
         ],
         "all fields should produce correct ordering with extra_args before --"
     );
