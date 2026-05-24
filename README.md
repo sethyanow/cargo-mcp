@@ -2,9 +2,9 @@
 
 An MCP server exposing cargo commands as tools for AI agents. Build, test, lint, and manage dependencies in Rust projects without arbitrary shell access.
 
-Built on [mcplease](https://crates.io/crates/mcplease). Forked from [jbr/cargo-mcp](https://github.com/jbr/cargo-mcp) (upstream abandoned).
+Built on [mcplease](https://crates.io/crates/mcplease). Forked from [jbr/cargo-mcp](https://github.com/jbr/cargo-mcp).
 
-## Enhancements over upstream
+## Enhancements
 
 ### New tool
 - **`cargo_doc`** — generate documentation with `no_deps` (default true) and `document_private_items` options
@@ -27,12 +27,6 @@ Built on [mcplease](https://crates.io/crates/mcplease). Forked from [jbr/cargo-m
 
 ```bash
 cargo install cargo-stevedore
-```
-
-### From source
-```bash
-git clone https://github.com/sethyanow/cargo-mcp.git
-cargo install --path cargo-mcp
 ```
 
 ## Configuration

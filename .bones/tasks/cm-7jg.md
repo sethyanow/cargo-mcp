@@ -1,12 +1,14 @@
 ---
 id: cm-7jg
 title: Rename cargo-mcp to stevedore
-status: active
+status: closed
 type: task
 priority: 1
 owner: claude-code
 phase: design
 ---
+
+
 
 
 ## Context
@@ -113,3 +115,7 @@ R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
 - NO renaming `cargo_test`, `cargo_clippy`, etc. tool names (they describe cargo subcommands)
 - NO creating backwards-compatibility aliases for `cargo-mcp`
 - NO changing the `.bones/` task ID prefix from `cm-` (historical, not branding)
+
+## Log
+
+- [2026-05-24T19:26:49Z] [claude-code] Debrief: renamed cargo-mcp to cargo-stevedore across 8 files (Cargo.toml, README, CLAUDE.md, state.rs, main.rs, set_working_directory.rs, tests.rs, Cargo.lock). XDG session path, env var fallback with deprecation, cargo subcommand arg stripping. 80 tests, 10/10 SCs. Reflections: skeleton was wrong about main.rs needing no change; adversarial battery caught SessionStore persistence interaction with env var tests; env var tests must be serialized into single function.
