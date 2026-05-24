@@ -4,8 +4,36 @@ An MCP server that exposes Cargo commands as tools, so AI assistants can build, 
 
 Built on [mcplease](https://crates.io/crates/mcplease).
 
+## Fork enhancements
+
+This fork ([sethyanow/cargo-mcp](https://github.com/sethyanow/cargo-mcp)) adds several improvements over [upstream](https://github.com/jbr/cargo-mcp):
+
+### New tool
+- **`cargo_doc`** — generate documentation with `no_deps` (default true) and `document_private_items` options
+
+### Tool enhancements
+- **`cargo_clippy`** — `all_targets` param to lint tests, examples, and benchmarks
+- **`cargo_test`** — `use_nextest` param to run tests via [cargo-nextest](https://nexte.st/) with correct arg mapping (`--no-capture` instead of `-- --nocapture`)
+- **`cargo_fmt`** — renamed from `cargo_fmt_check`; `check` param (default true) controls check vs. write mode
+- **`extra_args` on every tool** — pass arbitrary cargo flags (e.g., `--no-default-features`, `--features`, `--lib`) before any `--` separator
+
+### Reliability
+- **Process timeout** — cargo commands are bounded to 600 seconds; hung processes are killed and reaped rather than blocking the server indefinitely
+- **Per-process working directory** — concurrent MCP server instances (e.g., different worktrees) no longer share directory state
+
+### Code quality
+- **Testable arg building** — all tools refactored to extract `build_args()` methods, separating command construction from execution
+- **Full test suite** — covers arg building, nextest mapping, separator ordering, extra_args placement, timeout behavior, and edge cases
+
 ## Installation
 
+### From source (fork)
+```bash
+git clone https://github.com/sethyanow/cargo-mcp.git
+cargo install --path cargo-mcp
+```
+
+### Upstream
 ```bash
 cargo install cargo-mcp
 ```
