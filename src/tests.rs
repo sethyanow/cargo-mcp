@@ -117,6 +117,59 @@ fn clippy_explicit_false_no_all_targets() {
 }
 
 #[test]
+fn env_var_priority_and_legacy_fallback() {
+    use crate::state::CargoTools;
+
+    // Test 1: new name takes priority over old
+    unsafe {
+        std::env::set_var("STEVEDORE_DEFAULT_TOOLCHAIN", "nightly");
+        std::env::set_var("CARGO_MCP_DEFAULT_TOOLCHAIN", "stable");
+    }
+    let mut tools = CargoTools::new().unwrap();
+    assert_eq!(
+        tools.get_default_toolchain(None).unwrap(),
+        Some("nightly".to_string()),
+        "STEVEDORE_DEFAULT_TOOLCHAIN should take priority"
+    );
+
+    // Test 2: old name works as fallback when new name absent
+    unsafe {
+        std::env::remove_var("STEVEDORE_DEFAULT_TOOLCHAIN");
+        std::env::set_var("CARGO_MCP_DEFAULT_TOOLCHAIN", "1.75.0");
+    }
+    let mut tools = CargoTools::new().unwrap();
+    assert_eq!(
+        tools.get_default_toolchain(None).unwrap(),
+        Some("1.75.0".to_string()),
+        "CARGO_MCP_DEFAULT_TOOLCHAIN should work as fallback"
+    );
+
+    unsafe {
+        std::env::remove_var("CARGO_MCP_DEFAULT_TOOLCHAIN");
+    }
+}
+
+#[test]
+fn session_path_uses_xdg_data_dir() {
+    use crate::state::CargoTools;
+
+    let path = CargoTools::session_path();
+    let expected = dirs::data_dir()
+        .unwrap()
+        .join("stevedore")
+        .join("session.json");
+    assert_eq!(path, expected, "session path should use XDG data dir");
+    assert!(
+        !path.to_string_lossy().contains(".ai-tools"),
+        "session path must not use legacy .ai-tools directory"
+    );
+    assert!(
+        !path.to_string_lossy().contains("cargo-mcp"),
+        "session path must not reference cargo-mcp"
+    );
+}
+
+#[test]
 fn working_directory_is_per_process() {
     use crate::state::CargoTools;
     use std::path::PathBuf;

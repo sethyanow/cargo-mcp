@@ -1,12 +1,10 @@
-# cargo-mcp
+# stevedore
 
-An MCP server that exposes Cargo commands as tools, so AI assistants can build, test, lint, and manage dependencies in Rust projects without arbitrary shell access.
+An MCP server exposing cargo commands as tools for AI agents. Build, test, lint, and manage dependencies in Rust projects without arbitrary shell access.
 
-Built on [mcplease](https://crates.io/crates/mcplease).
+Built on [mcplease](https://crates.io/crates/mcplease). Forked from [jbr/cargo-mcp](https://github.com/jbr/cargo-mcp) (upstream abandoned).
 
-## Fork enhancements
-
-This fork ([sethyanow/cargo-mcp](https://github.com/sethyanow/cargo-mcp)) adds several improvements over [upstream](https://github.com/jbr/cargo-mcp):
+## Enhancements over upstream
 
 ### New tool
 - **`cargo_doc`** — generate documentation with `no_deps` (default true) and `document_private_items` options
@@ -27,41 +25,40 @@ This fork ([sethyanow/cargo-mcp](https://github.com/sethyanow/cargo-mcp)) adds s
 
 ## Installation
 
-### From source (fork)
+```bash
+cargo install cargo-stevedore
+```
+
+### From source
 ```bash
 git clone https://github.com/sethyanow/cargo-mcp.git
 cargo install --path cargo-mcp
 ```
 
-### Upstream
-```bash
-cargo install cargo-mcp
-```
-
 ## Configuration
 
-Add cargo-mcp to your MCP client configuration. For Claude Desktop:
+Add stevedore to your MCP client configuration. For Claude Desktop:
 
 ```json
 {
   "mcpServers": {
-    "cargo-mcp": {
-      "command": "cargo-mcp",
+    "stevedore": {
+      "command": "cargo-stevedore",
       "args": ["serve"]
     }
   }
 }
 ```
 
-To pin a default Rust toolchain, set the `CARGO_MCP_DEFAULT_TOOLCHAIN` environment variable:
+To pin a default Rust toolchain, set the `STEVEDORE_DEFAULT_TOOLCHAIN` environment variable:
 
 ```json
 {
   "mcpServers": {
-    "cargo-mcp": {
-      "command": "cargo-mcp",
+    "stevedore": {
+      "command": "cargo-stevedore",
       "args": ["serve"],
-      "env": { "CARGO_MCP_DEFAULT_TOOLCHAIN": "stable" }
+      "env": { "STEVEDORE_DEFAULT_TOOLCHAIN": "stable" }
     }
   }
 }

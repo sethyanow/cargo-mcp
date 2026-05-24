@@ -44,14 +44,17 @@ impl Debug for CargoTools {
 }
 
 impl CargoTools {
+    /// XDG-compliant path for persistent session data.
+    pub fn session_path() -> PathBuf {
+        let mut path = dirs::data_dir().unwrap_or_else(|| PathBuf::from("."));
+        path.push("stevedore");
+        path.push("session.json");
+        path
+    }
+
     /// Create a new CargoTools instance
     pub fn new() -> Result<Self> {
-        // Private session store for cargo-specific state
-        let mut private_path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-        private_path.push(".ai-tools");
-        private_path.push("sessions");
-        private_path.push("cargo-mcp.json");
-        let session_store = SessionStore::new(Some(private_path))?;
+        let session_store = SessionStore::new(Some(Self::session_path()))?;
 
         // In-memory only: working directory is per-process state and must not
         // bleed between separate MCP server instances (e.g., different worktrees).
@@ -63,11 +66,17 @@ impl CargoTools {
             default_session_id: "default",
         };
 
-        // Check for default toolchain from environment variable
-        if let Ok(toolchain) = std::env::var("CARGO_MCP_DEFAULT_TOOLCHAIN")
+        if let Ok(toolchain) = std::env::var("STEVEDORE_DEFAULT_TOOLCHAIN")
             && !toolchain.is_empty()
         {
-            log::info!("Setting default toolchain from CARGO_MCP_DEFAULT_TOOLCHAIN: {toolchain}");
+            log::info!("Setting default toolchain from STEVEDORE_DEFAULT_TOOLCHAIN: {toolchain}");
+            tools.set_default_toolchain(Some(toolchain), None)?;
+        } else if let Ok(toolchain) = std::env::var("CARGO_MCP_DEFAULT_TOOLCHAIN")
+            && !toolchain.is_empty()
+        {
+            log::warn!(
+                "CARGO_MCP_DEFAULT_TOOLCHAIN is deprecated, use STEVEDORE_DEFAULT_TOOLCHAIN instead"
+            );
             tools.set_default_toolchain(Some(toolchain), None)?;
         }
 

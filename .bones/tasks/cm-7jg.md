@@ -62,17 +62,17 @@ R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
 
 ## Success Criteria
 
-- [ ] SC1: `cargo install --path .` produces a `cargo-stevedore` binary
-- [ ] SC2: `cargo-stevedore serve` starts the MCP server
-- [ ] SC3: `cargo stevedore serve` works (cargo subcommand delegation)
-- [ ] SC4: README branding says "stevedore", not `cargo-mcp`
+- [x] SC1: `cargo install --path .` produces a `cargo-stevedore` binary
+- [x] SC2: `cargo-stevedore serve` starts the MCP server
+- [x] SC3: `cargo stevedore serve` works (cargo subcommand delegation)
+- [x] SC4: README branding says "stevedore", not `cargo-mcp`
       (references to upstream for attribution are fine)
-- [ ] SC5: MCP config examples use `"command": "cargo-stevedore"`
-- [ ] SC6: Session file writes to `dirs::data_dir()/stevedore/session.json`
-- [ ] SC7: All tests pass, clippy clean, fmt clean
-- [ ] SC8: `cargo metadata --format-version=1 | jq '.packages[0].name'` returns `"cargo-stevedore"`
-- [ ] SC9: Cargo.toml `authors` is Seth only; `repository` and `documentation` point to fork
-- [ ] SC10: `STEVEDORE_DEFAULT_TOOLCHAIN` env var replaces `CARGO_MCP_DEFAULT_TOOLCHAIN`
+- [x] SC5: MCP config examples use `"command": "cargo-stevedore"`
+- [x] SC6: Session file writes to `dirs::data_dir()/stevedore/session.json`
+- [x] SC7: All tests pass (79/79), clippy clean, fmt clean
+- [x] SC8: `cargo metadata --format-version=1 --no-deps | jq '.packages[0].name'` returns `"cargo-stevedore"`
+- [x] SC9: Cargo.toml `authors` is Seth only; `repository` and `documentation` point to fork
+- [x] SC10: `STEVEDORE_DEFAULT_TOOLCHAIN` env var replaces `CARGO_MCP_DEFAULT_TOOLCHAIN`
 
 ## Key Considerations (SRE)
 

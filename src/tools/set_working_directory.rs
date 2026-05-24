@@ -10,7 +10,7 @@ use std::path::PathBuf;
 /// Set the working directory for cargo operations
 /// 
 /// This sets the shared working directory that will be used by all AI tools,
-/// not just cargo-mcp. Other MCP servers like fs-mcp will also use this directory.
+/// not just stevedore. Other MCP servers will also use this directory.
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema, clap::Args)]
 #[serde(rename = "set_working_directory")]
 pub struct SetWorkingDirectory {

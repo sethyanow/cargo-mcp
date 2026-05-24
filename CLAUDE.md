@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Test Commands
 
-**Use the cargo-mcp MCP tools for all cargo operations** (build, check, clippy, test, fmt). Set the working directory first via `set_working_directory`, then call the appropriate tool. Do not shell out with `cargo` directly when an MCP tool exists.
+**Use the stevedore MCP tools for all cargo operations** (build, check, clippy, test, fmt). Set the working directory first via `set_working_directory`, then call the appropriate tool. Do not shell out with `cargo` directly when an MCP tool exists.
 
 ```
 cargo_check                                    # verify compilation
@@ -53,7 +53,7 @@ This is an MCP (Model Context Protocol) server that exposes cargo commands as to
 ### Project structure
 
 - `src/main.rs` — entry point, server startup, instructions string
-- `src/state.rs` — `CargoTools` struct (shared state). Manages working directory (per-process, in-memory) and session data (toolchain defaults, persisted to `~/.ai-tools/sessions/cargo-mcp.json`)
+- `src/state.rs` — `CargoTools` struct (shared state). Manages working directory (per-process, in-memory) and session data (toolchain defaults, persisted to XDG data dir via `dirs::data_dir()/stevedore/session.json`)
 - `src/tools.rs` — tool registration via `tools!` macro
 - `src/tools/cargo_utils.rs` — `create_cargo_command` and `execute_cargo_command` helpers used by every tool
 - `src/tools/cargo_*.rs` — one file per tool

@@ -1,14 +1,14 @@
 [package]
-name = "cargo-mcp"
+name = "cargo-stevedore"
 version = "0.2.0"
-authors = ["Jacob Rothstein <hi@jbr.me>", "Anthropic Claude Sonnet 4"]
+authors = ["Seth <claude.5vpzx@simplelogin.com>"]
 edition = "2024"
-description = "mcp server for cargo commands"
+description = "MCP server exposing cargo commands as tools for AI agents"
 readme = "README.md"
-repository = "https://github.com/jbr/cargo-mcp"
-documentation = "https://docs.rs/cargo-mcp"
+repository = "https://github.com/sethyanow/cargo-mcp"
+documentation = "https://docs.rs/cargo-stevedore"
 license = "MIT OR Apache-2.0"
-keywords = ["mcp"]
+keywords = ["mcp", "cargo", "rust", "ai", "stevedore"]
 categories = []
 
 [dependencies]
