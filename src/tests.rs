@@ -117,10 +117,10 @@ fn clippy_explicit_false_no_all_targets() {
 }
 
 #[test]
-fn env_var_priority_and_legacy_fallback() {
+fn env_var_toolchain_scenarios() {
     use crate::state::CargoTools;
 
-    // Test 1: new name takes priority over old
+    // Scenario 1: new name takes priority over old
     unsafe {
         std::env::set_var("STEVEDORE_DEFAULT_TOOLCHAIN", "nightly");
         std::env::set_var("CARGO_MCP_DEFAULT_TOOLCHAIN", "stable");
@@ -132,7 +132,7 @@ fn env_var_priority_and_legacy_fallback() {
         "STEVEDORE_DEFAULT_TOOLCHAIN should take priority"
     );
 
-    // Test 2: old name works as fallback when new name absent
+    // Scenario 2: old name works as fallback when new name absent
     unsafe {
         std::env::remove_var("STEVEDORE_DEFAULT_TOOLCHAIN");
         std::env::set_var("CARGO_MCP_DEFAULT_TOOLCHAIN", "1.75.0");
@@ -144,9 +144,65 @@ fn env_var_priority_and_legacy_fallback() {
         "CARGO_MCP_DEFAULT_TOOLCHAIN should work as fallback"
     );
 
+    // Scenario 3: whitespace-only passes through (not our job to validate)
     unsafe {
+        std::env::set_var("STEVEDORE_DEFAULT_TOOLCHAIN", "  ");
         std::env::remove_var("CARGO_MCP_DEFAULT_TOOLCHAIN");
     }
+    let mut tools = CargoTools::new().unwrap();
+    assert_eq!(
+        tools.get_default_toolchain(None).unwrap(),
+        Some("  ".to_string()),
+        "whitespace-only should pass through"
+    );
+
+    // Scenario 4: empty string does not override persisted state
+    // (env var is init mechanism, SessionStore persists across instances)
+    unsafe {
+        std::env::set_var("STEVEDORE_DEFAULT_TOOLCHAIN", "");
+        std::env::set_var("CARGO_MCP_DEFAULT_TOOLCHAIN", "");
+    }
+    let mut tools = CargoTools::new().unwrap();
+    let tc = tools.get_default_toolchain(None).unwrap();
+    assert!(
+        tc.is_some(),
+        "empty env vars do not clear persisted toolchain — session store retains prior value"
+    );
+
+    // Cleanup: reset persisted state
+    tools.set_default_toolchain(None, None).unwrap();
+    unsafe {
+        std::env::remove_var("STEVEDORE_DEFAULT_TOOLCHAIN");
+        std::env::remove_var("CARGO_MCP_DEFAULT_TOOLCHAIN");
+    }
+}
+
+// ── adversarial: session path + env var ──────────────────────────────
+
+#[test]
+fn session_path_idempotent() {
+    use crate::state::CargoTools;
+
+    let first = CargoTools::session_path();
+    let second = CargoTools::session_path();
+    assert_eq!(first, second, "session_path must be idempotent");
+}
+
+#[test]
+fn session_path_components() {
+    use crate::state::CargoTools;
+
+    let path = CargoTools::session_path();
+    let file_name = path.file_name().unwrap().to_str().unwrap();
+    let parent_name = path
+        .parent()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
+    assert_eq!(file_name, "session.json", "file must be session.json");
+    assert_eq!(parent_name, "stevedore", "parent dir must be stevedore");
 }
 
 #[test]
