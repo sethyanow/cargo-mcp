@@ -4,8 +4,13 @@ title: Managed target directory with disk usage reporting
 status: open
 type: task
 priority: 2
+depends_on: [cm-qnh, cm-dvs]
 phase: design
 ---
+
+
+
+
 
 ## Context
 

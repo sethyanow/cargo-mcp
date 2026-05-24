@@ -7,6 +7,9 @@ priority: 2
 phase: design
 ---
 
+
+
+
 ## Context
 
 Every agent session starts with a mandatory `set_working_directory` call

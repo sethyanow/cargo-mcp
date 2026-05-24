@@ -7,6 +7,7 @@ priority: 2
 phase: design
 ---
 
+
 ## Context
 
 All tool responses use prose strings with emojis and labels. Two sources:

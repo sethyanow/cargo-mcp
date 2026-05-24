@@ -4,8 +4,10 @@ title: Structured diagnostics via --message-format=json
 status: open
 type: feature
 priority: 1
+depends_on: [cm-ip0]
 phase: design
 ---
+
 
 ## Context
 

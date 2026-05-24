@@ -1,11 +1,13 @@
 ---
 id: cm-7jg
 title: Rename cargo-mcp to stevedore
-status: open
+status: active
 type: task
 priority: 1
+owner: claude-code
 phase: design
 ---
+
 
 ## Context
 
@@ -27,8 +29,9 @@ R3. Cargo.toml `authors` MUST list only the current maintainer (Seth).
     `repository` and `documentation` MUST point to the fork. Description
     MUST be updated. Original author credited in README, not Cargo.toml.
 
-R4. Session file path (`cargo-mcp.json`) MUST rename to `stevedore.json`
-    to avoid collisions if someone has both installed.
+R4. Session file path MUST move from `~/.ai-tools/sessions/cargo-mcp.json`
+    to XDG-compliant `dirs::data_dir() / "stevedore" / "session.json"`.
+    Old file is abandoned (not migrated). `dirs` crate already a dependency.
 
 R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
     it picks up the new name automatically (no code change expected).
@@ -42,13 +45,14 @@ R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
 | `Cargo.toml` | `name`, `description`, `repository`, `documentation`, `authors`, `keywords` |
 | `README.md` | All ~10 `cargo-mcp` references, install command, MCP config examples, repo URLs |
 | `CLAUDE.md` | ~2 references to `cargo-mcp` in project description |
-| `src/state.rs` | Session file path: `cargo-mcp.json` → `stevedore.json` |
-| `src/tools/set_working_directory.rs` | Comment mentioning `cargo-mcp` |
-| `src/main.rs` | INSTRUCTIONS string — update if branding needed (currently generic) |
+| `src/state.rs` | Session path: `~/.ai-tools/sessions/cargo-mcp.json` → `dirs::data_dir()/stevedore/session.json`; env var: fallback old name with deprecation warning |
+| `src/tools/set_working_directory.rs` | Doc comment mentioning `cargo-mcp` (line 13) |
+| `src/main.rs` | INSTRUCTIONS string — currently generic, no change needed |
 
 ### Files that DON'T change
 - `src/tools/cargo_*.rs` — tool names stay `cargo_*` (they wrap cargo commands, not the server)
 - `.bones/` — historical records, leave as-is
+- `CHANGELOG.md` — upstream URLs are historical attribution, not branding
 - Test files — no `cargo-mcp` references in test assertions
 
 ### Out of scope
@@ -64,9 +68,45 @@ R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
 - [ ] SC4: README branding says "stevedore", not `cargo-mcp`
       (references to upstream for attribution are fine)
 - [ ] SC5: MCP config examples use `"command": "cargo-stevedore"`
-- [ ] SC6: Session file writes to `stevedore.json`, not `cargo-mcp.json`
+- [ ] SC6: Session file writes to `dirs::data_dir()/stevedore/session.json`
 - [ ] SC7: All tests pass, clippy clean, fmt clean
 - [ ] SC8: `cargo metadata --format-version=1 | jq '.packages[0].name'` returns `"cargo-stevedore"`
+- [ ] SC9: Cargo.toml `authors` is Seth only; `repository` and `documentation` point to fork
+- [ ] SC10: `STEVEDORE_DEFAULT_TOOLCHAIN` env var replaces `CARGO_MCP_DEFAULT_TOOLCHAIN`
+
+## Key Considerations (SRE)
+
+- `server_info!()` uses `env!("CARGO_PKG_NAME")` — verified, picks up new name automatically
+- CHANGELOG.md has upstream jbr/cargo-mcp URLs — these are historical, leave untouched
+- main.rs INSTRUCTIONS string is generic ("Cargo operations for Rust projects") — no change needed
+- Session file path change (R4) is code logic, needs regression test
+- Doc files (README, CLAUDE.md, Cargo.toml) are non-logic — TDD escape hatch applies
+
+## Failure Catalog (Adversarial)
+
+**State Corruption: Session file path**
+- Assumption: Fresh install, no prior state
+- Betrayal: Existing `~/.ai-tools/sessions/cargo-mcp.json` with saved toolchain defaults orphaned. New `stevedore.json` starts empty.
+- Consequence: User's configured default toolchain silently stops working after upgrade
+- Mitigation: DECIDED (c) — accept loss. Low user count, trivially re-set. Path also moves to XDG-compliant location.
+
+**Temporal Betrayal: Env var rename**
+- Assumption: Users will update env var in shell config
+- Betrayal: `CARGO_MCP_DEFAULT_TOOLCHAIN` in `.bashrc` silently ignored. No error, no warning.
+- Consequence: Default toolchain silently stops working
+- Mitigation: DECIDED (a) — check `STEVEDORE_DEFAULT_TOOLCHAIN` first, fall back to `CARGO_MCP_DEFAULT_TOOLCHAIN` with `log::warn!` deprecation message
+
+**Encoding Boundaries: README text replacement**
+- Assumption: All `cargo-mcp` strings should become stevedore-branded
+- Betrayal: Upstream attribution URLs (`github.com/jbr/cargo-mcp`) must stay as-is
+- Consequence: Broken upstream links, lost provenance
+- Mitigation: Replace per-occurrence, not globally. SC4 already allows attribution references.
+
+**Temporal Betrayal: Binary coexistence**
+- Assumption: Clean install
+- Betrayal: Old `cargo-mcp` binary stays in `~/.cargo/bin/`. Both binaries exist.
+- Consequence: User runs old binary expecting new behavior
+- Mitigation: Document `cargo uninstall cargo-mcp` in README upgrade instructions. Not a code concern.
 
 ## Anti-Patterns (FORBIDDEN)
 

@@ -7,6 +7,7 @@ priority: 2
 phase: design
 ---
 
+
 ## Context
 
 `cargo metadata --format-version=1` returns structured JSON about the

@@ -88,3 +88,9 @@
 {"timestamp":"2026-05-24T18:32:52.274937+00:00","actor":"claude-code","event_type":"created","task_id":"cm-0au","details":{}}
 {"timestamp":"2026-05-24T18:32:54.258405+00:00","actor":"claude-code","event_type":"created","task_id":"cm-k0q","details":{}}
 {"timestamp":"2026-05-24T18:32:56.823823+00:00","actor":"claude-code","event_type":"created","task_id":"cm-oqa","details":{}}
+{"timestamp":"2026-05-24T19:09:22.187637+00:00","actor":"claude-code","event_type":"claimed","task_id":"cm-7jg","details":{"actor":"claude-code"}}
+{"timestamp":"2026-05-24T19:13:32.752862+00:00","actor":"claude-code","event_type":"dep_added","task_id":"cm-dvs","details":{"kind":"blocks","to":"cm-x8c"}}
+{"timestamp":"2026-05-24T19:13:32.800672+00:00","actor":"claude-code","event_type":"dep_added","task_id":"cm-x8c","details":{"kind":"blocks","to":"cm-qnh"}}
+{"timestamp":"2026-05-24T19:13:32.836507+00:00","actor":"claude-code","event_type":"dep_added","task_id":"cm-szb","details":{"kind":"blocks","to":"cm-ip0"}}
+{"timestamp":"2026-05-24T19:13:58.958741+00:00","actor":"claude-code","event_type":"dep_removed","task_id":"cm-dvs","details":{"to":"cm-x8c"}}
+{"timestamp":"2026-05-24T19:13:59.013359+00:00","actor":"claude-code","event_type":"dep_added","task_id":"cm-x8c","details":{"kind":"blocks","to":"cm-dvs"}}
