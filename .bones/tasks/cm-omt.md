@@ -15,6 +15,7 @@ phase: design
 
 
 
+
 ## Context
 
 Flagged during adversarial reflection on cm-1k8. `cmd.output()` at
@@ -125,3 +126,4 @@ to access non-pub fns in this private module — `src/tests.rs` cannot reach the
 - [2026-05-24T16:42:56Z] [claude-code] SRE refinement: (1) Fixed test location — must be inline #[cfg(test)] mod inside cargo_utils.rs (private module). (2) Fixed test code — mut cmd + owned pass. (3) Clarified timeout param as Duration. (4) Documented edge cases: partial output lost on timeout, drain threads brief lifecycle. All skeleton claims verified via LSP find_references (12 callers confirmed).
 - [2026-05-24T16:46:57Z] [claude-code] Adversarial planning complete. Key finding: try_wait/kill race on Windows — child.kill() can fail if process exits between try_wait()==None and kill(). Fix: let _ = child.kill() (best-effort) + child.wait()? (structural reap). Also documented zero-duration edge case (acceptable, no guard needed).
 - [2026-05-24T17:01:10Z] [claude-code] Implementation complete. 76 tests pass (71 original + 5 new). Adversarial stress test: normal completion, failed exit, spawn failure, immediate exit — all GREEN with Three-Question traces. No bugs found. Key gap caught: existing tests never exercised execute_cargo_command (only arg building). Now covered.
+- [2026-05-24T17:05:06Z] [claude-code] Live-tested via fresh MCP server instance: cargo check, fmt, clippy --all-targets, and cargo test all execute normally through the timeout-enabled binary. No regressions in production use.
