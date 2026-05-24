@@ -1,11 +1,13 @@
 ---
 id: cm-omt
 title: Add process timeout to execute_cargo_command
-status: open
+status: active
 type: task
 priority: 2
+owner: claude-code
 phase: design
 ---
+
 
 
 
