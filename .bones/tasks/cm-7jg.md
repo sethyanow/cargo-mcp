@@ -15,11 +15,13 @@ Name chosen: "stevedore" — the person who loads and unloads cargo.
 
 ## Requirements
 
-R1. Package and binary name MUST change from `cargo-mcp` to `stevedore`
-    across all build artifacts and install paths.
+R1. Cargo.toml package name MUST be `cargo-stevedore` (crates.io name,
+    enables `cargo stevedore` subcommand convention). Binary name is
+    `cargo-stevedore` (default from package name — no `[[bin]]` override).
 
-R2. All documentation MUST reference `stevedore`, not `cargo-mcp`.
-    MCP client config examples MUST show `"command": "stevedore"`.
+R2. All documentation branding MUST say `stevedore`, not `cargo-mcp`.
+    MCP client config examples MUST show `"command": "cargo-stevedore"`.
+    Install command: `cargo install cargo-stevedore`.
 
 R3. Cargo.toml `authors` MUST list only the current maintainer (Seth).
     `repository` and `documentation` MUST point to the fork. Description
@@ -56,14 +58,15 @@ R5. The `server_info!()` macro in main.rs reads from Cargo.toml — verify
 
 ## Success Criteria
 
-- [ ] SC1: `cargo install --path .` produces a `stevedore` binary
-- [ ] SC2: `stevedore serve` starts the MCP server
-- [ ] SC3: README contains zero references to `cargo-mcp` as the project name
+- [ ] SC1: `cargo install --path .` produces a `cargo-stevedore` binary
+- [ ] SC2: `cargo-stevedore serve` starts the MCP server
+- [ ] SC3: `cargo stevedore serve` works (cargo subcommand delegation)
+- [ ] SC4: README branding says "stevedore", not `cargo-mcp`
       (references to upstream for attribution are fine)
-- [ ] SC4: MCP config examples use `"command": "stevedore"`
-- [ ] SC5: Session file writes to `stevedore.json`, not `cargo-mcp.json`
-- [ ] SC6: All tests pass, clippy clean, fmt clean
-- [ ] SC7: `cargo metadata --format-version=1 | jq '.packages[0].name'` returns `"stevedore"`
+- [ ] SC5: MCP config examples use `"command": "cargo-stevedore"`
+- [ ] SC6: Session file writes to `stevedore.json`, not `cargo-mcp.json`
+- [ ] SC7: All tests pass, clippy clean, fmt clean
+- [ ] SC8: `cargo metadata --format-version=1 | jq '.packages[0].name'` returns `"cargo-stevedore"`
 
 ## Anti-Patterns (FORBIDDEN)
 
