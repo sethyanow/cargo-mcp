@@ -26,18 +26,19 @@ fix auto-applies them.
 ## Requirements
 
 R1. `cargo_check`, `cargo_clippy`, and `cargo_build` MUST support a
-    `message_format` param. When set to `"json"`, pass
-    `--message-format=json` to cargo.
+    `message_format` param. Default is `"json"` — passes
+    `--message-format=json` to cargo automatically.
 
 R2. When `message_format` is `"json"`, the tool output MUST return
     the raw JSON lines from cargo, not the prose-formatted output.
     Each line is a self-contained JSON object — return them as-is.
 
-R3. Default `message_format` MUST be `None` (current behavior
-    unchanged). Agents opt in to structured output.
+R3. `message_format` can be set to `"human"` to get cargo's default
+    prose output. Agents are the consumer — structured is the default,
+    prose is the escape hatch.
 
-R4. The JSON output MUST NOT be wrapped in additional formatting
-    (no emoji headers, no "STDOUT:" labels). Raw cargo JSON only.
+R4. The JSON output MUST NOT be wrapped in additional formatting.
+    Raw cargo JSON only.
 
 ## Scope
 
@@ -67,15 +68,15 @@ R4. The JSON output MUST NOT be wrapped in additional formatting
 
 ## Success Criteria
 
-- [ ] SC1: `cargo_check { message_format: "json" }` returns JSON lines
+- [ ] SC1: `cargo_check {}` (default) returns JSON lines with structured diagnostics
 - [ ] SC2: Each line is valid JSON with `reason` field
-- [ ] SC3: `cargo_clippy { message_format: "json" }` returns structured
-      clippy diagnostics with spans and suggestions
-- [ ] SC4: Default behavior (no `message_format`) unchanged
+- [ ] SC3: `cargo_clippy {}` (default) returns structured clippy diagnostics
+      with spans and suggestions
+- [ ] SC4: `cargo_check { message_format: "human" }` returns prose output
 - [ ] SC5: All tests pass, clippy clean, fmt clean
 
 ## Anti-Patterns (FORBIDDEN)
 
 - NO parsing or transforming the JSON cargo emits (pass through raw)
-- NO making `message_format: "json"` the default (opt-in only)
+- NO defaulting to prose output (agents are the consumer — JSON default)
 - NO adding `message_format` to tools that don't support it (test, fmt, etc.)

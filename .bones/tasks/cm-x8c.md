@@ -76,8 +76,8 @@ R3. `cargo_clean` MUST report the size freed after cleaning. Before/after
 
 - [ ] SC1: With no user config, cargo commands write artifacts to
       `<cache_dir>/stevedore/target/<hash>/`, not `<project>/target/`
-- [ ] SC2: `cargo_info` reports `target_directory` path and size in
-      human-readable form
+- [ ] SC2: `cargo_info` returns JSON with `target_directory` (string),
+      `project_path` (string), and `size_bytes` (integer) fields
 - [ ] SC3: `cargo_clean` output includes bytes/MB freed
 - [ ] SC4: User-set `CARGO_TARGET_DIR` (via env or `cargo_env`) is
       respected — server does not override it

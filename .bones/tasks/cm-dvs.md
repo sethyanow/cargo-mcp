@@ -59,6 +59,7 @@ R4. The INSTRUCTIONS string SHOULD be updated to reflect that
 
 ## Anti-Patterns (FORBIDDEN)
 
-- NO walking up the directory tree to find Cargo.toml (CWD only — predictable)
+- NO walking up the directory tree to find Cargo.toml (CWD only —
+  predictable, and MCP clients launch the server from the project root)
 - NO making `set_working_directory` tool deprecated or hidden
 - NO persisting the auto-detected dir to disk (in-memory only, per existing design)

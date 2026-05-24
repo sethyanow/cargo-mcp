@@ -24,15 +24,13 @@ not installed.
 R1. A `cargo_audit` tool MUST exist that runs `cargo audit`.
 
 R2. The tool MUST support:
-    - `json` — output in JSON format (`--json`) for structured parsing
-    - `deny` — list of advisory categories to treat as errors
     - `toolchain`, `cargo_env`, `extra_args` — standard params
 
 R3. If `cargo-audit` is not installed, the tool MUST return a clear
     error message suggesting installation, not a cryptic spawn failure.
 
-R4. Default output is human-readable (same as `cargo audit` default).
-    `json: true` switches to structured JSON.
+R4. Default output MUST be JSON (`--json`). Agents are the consumer.
+    Use `extra_args` for any other flags (`--deny`, etc.).
 
 ## Scope
 
@@ -55,9 +53,8 @@ R4. Default output is human-readable (same as `cargo audit` default).
 
 ## Success Criteria
 
-- [ ] SC1: `cargo_audit {}` runs `cargo audit` and returns output
-- [ ] SC2: `cargo_audit { json: true }` returns structured JSON
-- [ ] SC3: Missing `cargo-audit` binary returns helpful error message
+- [ ] SC1: `cargo_audit {}` runs `cargo audit --json` and returns structured JSON
+- [ ] SC2: Missing `cargo-audit` binary returns helpful error message
 - [ ] SC4: All tests pass, clippy clean, fmt clean
 
 ## Anti-Patterns (FORBIDDEN)

@@ -30,8 +30,9 @@ R2. The tool MUST accept `package` (optional, filter to workspace
     member), `toolchain`, and `cargo_env` params for consistency
     with other tools.
 
-R3. Output MUST be the raw JSON from cargo metadata, not prose-wrapped.
-    Agents parse this programmatically.
+R3. Output MUST be the raw JSON from cargo metadata — returned directly,
+    NOT passed through `execute_cargo_command`. The metadata JSON is the
+    response. No wrapper, no nesting.
 
 R4. The tool does NOT require `set_working_directory` to have been
     called if CWD auto-detect (cm-dvs) is active — but must work
@@ -50,9 +51,8 @@ R4. The tool does NOT require `set_working_directory` to have been
 - `cargo metadata` outputs to stdout, not stderr. The raw JSON is the
   useful output — don't wrap it in the execute_cargo_command prose
   format.
-- Consider bypassing `execute_cargo_command` entirely and using
-  `Command::output()` directly (or the timeout wrapper), returning
-  stdout as-is. The command/dir/status wrapper adds noise to JSON.
+- Bypasses `execute_cargo_command` — uses the timeout wrapper directly
+  and returns stdout as the response. No JSON-in-JSON nesting.
 - `--no-deps` flag is useful to skip dependency resolution (faster).
   Expose as a param.
 
@@ -67,4 +67,4 @@ R4. The tool does NOT require `set_working_directory` to have been
 ## Anti-Patterns (FORBIDDEN)
 
 - NO parsing or filtering the metadata JSON (return raw)
-- NO wrapping output in execute_cargo_command prose format
+- NO routing through `execute_cargo_command` (no JSON-in-JSON)

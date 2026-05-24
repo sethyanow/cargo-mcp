@@ -21,13 +21,22 @@ R1. A `cargo_init` tool MUST exist that runs `cargo init` in the
 
 R2. A `cargo_new` tool MUST exist that runs `cargo new <name>`.
 
-R3. Both MUST support:
+R3. `cargo_new` MUST support:
+    - `name` — project name (required, creates directory)
     - `lib` — create a library instead of binary (`--lib`)
-    - `name` — project/crate name
     - `edition` — Rust edition (e.g., `"2024"`)
+    - `vcs` — version control init (`"git"`, `"none"`, etc.) — agents
+      creating crates inside existing repos usually want `--vcs none`
     - `toolchain`, `cargo_env`, `extra_args` — standard params
 
-R4. `cargo_new` does NOT require `set_working_directory` to have been
+R4. `cargo_init` MUST support:
+    - `lib` — create a library instead of binary (`--lib`)
+    - `edition` — Rust edition
+    - `vcs` — version control init
+    - `toolchain`, `cargo_env`, `extra_args` — standard params
+    - Name is inferred from the directory (cargo init behavior).
+
+R5. `cargo_new` does NOT require `set_working_directory` to have been
     called first — it creates the directory. `cargo_init` uses the
     current working directory.
 
@@ -50,12 +59,13 @@ R4. `cargo_new` does NOT require `set_working_directory` to have been
 
 ## Success Criteria
 
-- [ ] SC1: `cargo_init { name: "my-lib", lib: true }` creates a
-      library project in the working directory
+- [ ] SC1: `cargo_init { lib: true }` creates a library project in the
+      working directory (name inferred from dir)
 - [ ] SC2: `cargo_new { name: "my-app" }` creates a new binary
       project directory
 - [ ] SC3: `edition` param sets the Rust edition
-- [ ] SC4: All tests pass, clippy clean, fmt clean
+- [ ] SC4: `vcs: "none"` skips git init
+- [ ] SC5: All tests pass, clippy clean, fmt clean
 
 ## Anti-Patterns (FORBIDDEN)
 

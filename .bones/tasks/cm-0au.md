@@ -57,7 +57,8 @@ R3. Default behavior: `cargo fix --allow-dirty --allow-staged`.
 - [ ] SC1: `cargo_fix {}` runs `cargo fix --allow-dirty --allow-staged`
 - [ ] SC2: `cargo_fix { clippy: true }` applies clippy suggestions
 - [ ] SC3: `cargo_fix { package: "my-lib" }` scopes to specific package
-- [ ] SC4: All tests pass, clippy clean, fmt clean
+- [ ] SC4: `extra_args` spliced into command before any separator
+- [ ] SC5: All tests pass, clippy clean, fmt clean
 
 ## Anti-Patterns (FORBIDDEN)
 
