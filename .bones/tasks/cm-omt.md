@@ -9,6 +9,8 @@ phase: design
 
 
 
+
+
 ## Context
 
 Flagged during adversarial reflection on cm-1k8. `cmd.output()` at
@@ -48,93 +50,48 @@ files change. Zero new dependencies.
 
 **Approach — `try_wait()` poll with deadline (zero deps, no unsafe):**
 
-`Child::try_wait(&mut self)` is the stdlib's non-blocking exit poll. Because
-it takes `&mut self` (not `self`), we retain child ownership and can call
-`child.kill()` natively on timeout. Cross-platform — no libc, no unsafe.
+`Child::try_wait(&mut self)` is the stdlib's non-blocking exit poll. Takes
+`&mut self` (not `self`), so we retain child ownership and can call
+`child.kill()` on timeout. Cross-platform — no libc, no unsafe.
 
-Two pipe-drain threads are required to prevent pipe deadlock (same threads
-`cmd.output()` spawns internally — just made explicit).
+Two pipe-drain threads prevent pipe deadlock (same pattern `cmd.output()`
+uses internally — just made explicit).
 
-```rust
-use std::io::Read;
-use std::process::Stdio;
-use std::time::{Duration, Instant};
-use std::thread;
-
-const CARGO_COMMAND_TIMEOUT_SECS: u64 = 600; // 10 minutes
-
-let mut child = cmd
-    .stdout(Stdio::piped())
-    .stderr(Stdio::piped())
-    .spawn()?;
-
-// Drain pipes in background to prevent pipe deadlock
-let stdout_pipe = child.stdout.take().unwrap();
-let stderr_pipe = child.stderr.take().unwrap();
-let stdout_thread = thread::spawn(move || {
-    let mut buf = Vec::new();
-    let mut r = stdout_pipe;
-    r.read_to_end(&mut buf).map(|_| buf)
-});
-let stderr_thread = thread::spawn(move || {
-    let mut buf = Vec::new();
-    let mut r = stderr_pipe;
-    r.read_to_end(&mut buf).map(|_| buf)
-});
-
-// Poll for exit with deadline
-let deadline = Instant::now() + Duration::from_secs(timeout_secs);
-let status = loop {
-    match child.try_wait()? {
-        Some(status) => break status,
-        None if Instant::now() >= deadline => {
-            child.kill()?;
-            child.wait()?; // reap zombie
-            anyhow::bail!(
-                "cargo {command_name} timed out after {timeout_secs}s"
-            );
-        }
-        None => thread::sleep(Duration::from_millis(100)),
-    }
-};
-
-let stdout_bytes = stdout_thread.join().unwrap()?;
-let stderr_bytes = stderr_thread.join().unwrap()?;
-```
-
-**Why `try_wait` over the alternatives:**
+**Why `try_wait` over alternatives:**
 - `wait_with_output(self)` consumes child → can't call `kill()` on timeout
-- `wait-timeout` crate works but is an unnecessary dep for what stdlib provides
-- Thread + channel + libc requires unsafe for kill and is unix-only
+- `wait-timeout` crate — unnecessary dep for what stdlib provides
+- Thread + channel + libc — requires unsafe, unix-only
 - `try_wait` retains ownership, `kill()` is cross-platform, zero deps
 
 **Test strategy:** Extract `execute_cargo_command_with_timeout(cmd, path,
-name, timeout)` as private fn. Public `execute_cargo_command` calls it with
-`CARGO_COMMAND_TIMEOUT_SECS`. Tests call the internal fn with short timeouts.
+name, timeout: Duration)` as a non-pub fn. Public `execute_cargo_command`
+calls it with `Duration::from_secs(CARGO_COMMAND_TIMEOUT_SECS)`. Test lives
+in an inline `#[cfg(test)] mod tests` block inside `cargo_utils.rs` (only way
+to access non-pub fns in this private module — `src/tests.rs` cannot reach them).
 
-```rust
-#[cfg(unix)]
-#[test]
-fn execute_cargo_command_times_out() {
-    use std::process::Command;
-    use std::path::PathBuf;
-    use std::time::Duration;
+**Edge cases (documented, acceptable):**
+- On timeout, partial stdout/stderr is lost (not captured in error). Per R4,
+  error only needs command name + duration.
+- Pipe drain threads continue briefly after bail (until EOF from dead child).
+  Not a resource leak — `kill()` + `wait()` ensures child death, pipes close.
 
-    let cmd = Command::new("sleep");
-    // sleep doesn't exist in /tmp as a project but execute_cargo_command
-    // sets current_dir — just needs a valid path
-    let result = execute_cargo_command_with_timeout(
-        cmd.arg("60"),
-        &PathBuf::from("/tmp"),
-        "sleep-test",
-        Duration::from_secs(1),
-    );
-    assert!(result.is_err());
-    let msg = result.unwrap_err().to_string();
-    assert!(msg.contains("timed out"), "expected timeout, got: {msg}");
-    assert!(msg.contains("sleep-test"), "expected command name, got: {msg}");
-}
-```
+## Key Considerations (Failure Catalog)
+
+**Temporal Betrayal: try_wait/kill race window**
+- Assumption: Process is alive when we call `kill()` after `try_wait()` returns `None`
+- Betrayal: Process exits between `try_wait()==None` and `kill()`. On Windows,
+  `TerminateProcess` on an exited process returns error.
+- Consequence: Spurious io::Error propagated instead of clean timeout message.
+- Mitigation: Use `let _ = child.kill();` (best-effort) + `child.wait()?`
+  (always succeeds — process is dead either way). R3 satisfied: process dead,
+  zombie reaped. The kill is good-faith; `wait()` is the structural guarantee.
+
+**Input Hostility: Zero-duration timeout**
+- Assumption: Timeout is positive (hundreds of seconds in production)
+- Betrayal: `Duration::ZERO` — deadline immediately expired, process killed on first poll.
+- Consequence: "timed out after 0s" error, no output captured.
+- Mitigation: Not runtime-guarded. Production constant is 600s, test uses 1s.
+  Document in fn signature. No criterion needed.
 
 ## Success Criteria
 
@@ -161,3 +118,5 @@ fn execute_cargo_command_times_out() {
 
 - [2026-05-24T13:48:34Z] [claude-code] Scoped via LSP: fix is fully contained in execute_cargo_command (cargo_utils.rs:32). All 12 callers unchanged. Two implementation options documented (wait-timeout crate vs thread+channel+libc). Test strategy: extract execute_cargo_command_with_timeout for testability.
 - [2026-05-24T16:32:57Z] [claude-code] Replaced Options A/B with try_wait() poll approach. Zero new deps, no unsafe, cross-platform kill via Child::kill(). Pipe-drain threads mirror what stdlib output() does internally. User decision.
+- [2026-05-24T16:42:56Z] [claude-code] SRE refinement: (1) Fixed test location — must be inline #[cfg(test)] mod inside cargo_utils.rs (private module). (2) Fixed test code — mut cmd + owned pass. (3) Clarified timeout param as Duration. (4) Documented edge cases: partial output lost on timeout, drain threads brief lifecycle. All skeleton claims verified via LSP find_references (12 callers confirmed).
+- [2026-05-24T16:46:57Z] [claude-code] Adversarial planning complete. Key finding: try_wait/kill race on Windows — child.kill() can fail if process exits between try_wait()==None and kill(). Fix: let _ = child.kill() (best-effort) + child.wait()? (structural reap). Also documented zero-duration edge case (acceptable, no guard needed).
